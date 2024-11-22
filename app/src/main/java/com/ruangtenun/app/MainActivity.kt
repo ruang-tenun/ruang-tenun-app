@@ -1,4 +1,4 @@
-package com.capstone.ruangtenunapp
+package com.ruangtenun.app
 
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
