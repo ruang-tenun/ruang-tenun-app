@@ -53,7 +53,6 @@
         android:id="@+id/tf_full_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/full_name"
         app:layout_constraintEnd_toEndOf="@id/tv_full_name"
         app:layout_constraintStart_toStartOf="@id/tv_full_name"
         app:layout_constraintTop_toBottomOf="@id/tv_full_name">
@@ -62,6 +61,7 @@
             android:id="@+id/ed_input_full_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/full_name"
             android:inputType="text"
             android:textStyle="bold" />
 
@@ -83,7 +83,6 @@
         android:id="@+id/tf_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/email"
         app:layout_constraintEnd_toEndOf="@id/tv_email"
         app:layout_constraintStart_toStartOf="@id/tv_email"
         app:layout_constraintTop_toBottomOf="@id/tv_email">
@@ -92,6 +91,7 @@
             android:id="@+id/ed_input_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/email"
             android:inputType="textEmailAddress"
             android:textStyle="bold" />
 
@@ -113,7 +113,6 @@
         android:id="@+id/tf_set_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:hint="@string/set_password"
         app:layout_constraintEnd_toEndOf="@id/tv_set_password"
         app:layout_constraintStart_toStartOf="@id/tv_set_password"
         app:layout_constraintTop_toBottomOf="@id/tv_set_password">
@@ -122,6 +121,7 @@
             android:id="@+id/ed_input_set_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:hint="@string/set_password"
             android:inputType="textPassword"
             android:textStyle="bold" />
 
