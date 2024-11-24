@@ -12,10 +12,22 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
+        android:id="@+id/navigation_shop"
+        android:name="com.ruangtenun.app.view.main.shop.ShopFragment"
+        android:label="@string/title_shop"
+        tools:layout="@layout/fragment_shop" />
+
+    <fragment
         android:id="@+id/navigation_scanner"
         android:name="com.ruangtenun.app.view.main.scanner.ScannerFragment"
         android:label="@string/title_scanner"
         tools:layout="@layout/fragment_scanner" />
+
+    <fragment
+        android:id="@+id/navigation_catalog"
+        android:name="com.ruangtenun.app.view.main.katalog.CatalogFragment"
+        android:label="@string/title_catalog"
+        tools:layout="@layout/fragment_catalog" />
 
     <fragment
         android:id="@+id/navigation_profile"
