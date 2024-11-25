@@ -1,6 +1,0 @@
-<resources>
-    <style name="Base.Theme.RuangTenunApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/white</item>
-        <item name="android:fontFamily">@font/inter</item>
-    </style>
-</resources>

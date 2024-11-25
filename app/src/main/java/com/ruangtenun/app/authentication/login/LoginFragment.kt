@@ -4,29 +4,34 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.ruangtenun.app.R
 import com.ruangtenun.app.authentication.register.RegisterFragment
+import com.ruangtenun.app.databinding.FragmentLoginBinding
 
 class LoginFragment : Fragment() {
+
+    private var _binding: FragmentLoginBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_login, container, false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        view.findViewById<TextView>(R.id.tv_sign_up_click).setOnClickListener {
+        binding.tvSignUpClick.setOnClickListener {
             parentFragmentManager.beginTransaction()
                 .replace(
                     R.id.fragment_container,
                     RegisterFragment(),
                     RegisterFragment::class.java.simpleName
                 )
-                .addToBackStack(null)
                 .commit()
         }
+
         return view
     }
 }

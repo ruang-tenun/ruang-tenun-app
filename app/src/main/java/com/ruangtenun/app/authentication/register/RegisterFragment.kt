@@ -1,33 +1,36 @@
 package com.ruangtenun.app.authentication.register
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.TextView
+import androidx.fragment.app.Fragment
 import com.ruangtenun.app.R
 import com.ruangtenun.app.authentication.login.LoginFragment
+import com.ruangtenun.app.databinding.FragmentRegisterBinding
 
 class RegisterFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+
+    private var _binding: FragmentRegisterBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_register, container, false)
+        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
+        val view = binding.root
 
-        view.findViewById<Button>(R.id.back_button).setOnClickListener {
-            moveToLogin()
+        binding.apply {
+            backButton.setOnClickListener {
+                moveToLogin()
+            }
+            tvSignInClick.setOnClickListener {
+                moveToLogin()
+            }
         }
 
-        view.findViewById<TextView>(R.id.tv_sign_in_click).setOnClickListener {
-            moveToLogin()
-        }
         return view
     }
 
