@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/navigation_catalog"
-        android:name="com.ruangtenun.app.view.main.katalog.CatalogFragment"
+        android:name="com.ruangtenun.app.view.main.catalog.CatalogFragment"
         android:label="@string/title_catalog"
         tools:layout="@layout/fragment_catalog" />
 

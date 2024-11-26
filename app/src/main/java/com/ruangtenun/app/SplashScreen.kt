@@ -8,6 +8,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.ruangtenun.app.databinding.ActivitySplashScreenBinding
+import com.ruangtenun.app.view.authentication.AuthActivity
 import com.ruangtenun.app.view.main.MainActivity
 
 class SplashScreen : AppCompatActivity() {
@@ -25,11 +26,19 @@ class SplashScreen : AppCompatActivity() {
             insets
         }
         installSplashScreen()
-        navigateToHomeActivity()
+//        navigateToHomeActivity()
+        navigateToAuthActivity()
     }
 
     private fun navigateToHomeActivity() {
         val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+        finish()
+    }
+
+    private fun navigateToAuthActivity() {
+        val intent = Intent(this, AuthActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
         finish()

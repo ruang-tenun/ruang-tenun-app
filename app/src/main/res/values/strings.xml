@@ -16,4 +16,23 @@
     <string name="title_product">Product</string>
     <string name="history_menu">History</string>
     <string name="new_scan">New Scan</string>
+    <string name="sign_in">Sign in to your \nAccount</string>
+    <string name="sign_in_description">Enter your email and password to log in </string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot Password ?</string>
+    <string name="login">Log In</string>
+    <string name="or">Or</string>
+    <string name="google_login">Continue with Google</string>
+    <string name="facebook_login">Continue with Facebook</string>
+    <string name="doesnt_have_account">Don’t have an account?</string>
+    <string name="sign_up">Sign up</string>
+    <string name="sign_up_description">Create an account to continue!</string>
+    <string name="full_name">Full Name</string>
+    <string name="set_password">Set Password</string>
+    <string name="register">Register</string>
+    <string name="already_have_account">Already have an account?</string>
+    <string name="back_button">Back Button</string>
+    <string name="invalid_format_email">Format email tidak valid</string>
+    <string name="empty_email_error">Email tidak boleh kosong</string>
 </resources>
