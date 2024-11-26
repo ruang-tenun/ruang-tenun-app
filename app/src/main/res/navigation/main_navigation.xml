@@ -12,10 +12,10 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_shop"
-        android:name="com.ruangtenun.app.view.main.shop.ShopFragment"
-        android:label="@string/title_shop"
-        tools:layout="@layout/fragment_shop" />
+        android:id="@+id/navigation_product"
+        android:name="com.ruangtenun.app.view.main.product.ProductFragment"
+        android:label="@string/title_product"
+        tools:layout="@layout/fragment_product" />
 
     <fragment
         android:id="@+id/navigation_scanner"

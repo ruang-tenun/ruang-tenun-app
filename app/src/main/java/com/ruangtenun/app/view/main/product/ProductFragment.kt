@@ -1,22 +1,21 @@
-package com.ruangtenun.app.view.main.shop
+package com.ruangtenun.app.view.main.product
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ruangtenun.app.R
-import com.ruangtenun.app.databinding.FragmentShopBinding
+import com.ruangtenun.app.databinding.FragmentProductBinding
 
-class ShopFragment : Fragment() {
+class ProductFragment : Fragment() {
 
-    private lateinit var binding: FragmentShopBinding
+    private lateinit var binding: FragmentProductBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentShopBinding.inflate(layoutInflater, container, false)
+        binding = FragmentProductBinding.inflate(layoutInflater, container, false)
 
         return binding.root
     }
