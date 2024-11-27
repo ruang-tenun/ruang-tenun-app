@@ -1,8 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="Base.Theme.RuangTenunApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Status bar color -->
-        <item name="android:statusBarColor">@color/black</item>
-        <!-- Optional: Set status bar icons to light -->
+        <item name="android:statusBarColor">@color/background</item>
         <item name="android:windowLightStatusBar">false</item>
 
         <!-- Other colors -->
@@ -11,4 +9,6 @@
         <item name="android:colorBackground">@color/background</item>
         <item name="colorOnBackground">@color/onBackground</item>
     </style>
+
+    <style name="Theme.RuangTenunApp" parent="Base.Theme.RuangTenunApp" />
 </resources>
