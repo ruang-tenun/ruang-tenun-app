@@ -35,4 +35,21 @@
     <string name="back_button">Back Button</string>
     <string name="invalid_format_email">Format email tidak valid</string>
     <string name="empty_email_error">Email tidak boleh kosong</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_description">Search for an woven by taking a photo or uploading an image</string>
+    <string name="upload_image">Upload An Image</string>
+    <string name="take_photo">Take Photo</string>
+    <string name="capture_image">Capture</string>
+    <string name="switch_camera">Switch Camera</string>
+    <string name="pick_image">Pick Image From Gallery</string>
+    <string name="imageUpload">Uploaded Image</string>
+    <string name="analyze_image">Analyze</string>
+    <string name="title_search">Visual Search</string>
+    <string name="permission_accept">Permission request granted</string>
+    <string name="permission_denied">Permission request denied</string>
+    <string name="no_image_selected">No Image Selected</string>
+    <string name="location_denied">Location permission is not granted</string>
+    <string name="location_failed">Failed to get location</string>
+    <string name="location_acquired">Location acquired</string>
 </resources>

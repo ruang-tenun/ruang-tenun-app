@@ -26,8 +26,8 @@ class SplashScreen : AppCompatActivity() {
             insets
         }
         installSplashScreen()
-//        navigateToHomeActivity()
-        navigateToAuthActivity()
+        navigateToHomeActivity()
+//        navigateToAuthActivity()
     }
 
     private fun navigateToHomeActivity() {

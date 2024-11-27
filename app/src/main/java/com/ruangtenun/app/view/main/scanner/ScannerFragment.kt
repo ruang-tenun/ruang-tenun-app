@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.ruangtenun.app.R
 import com.ruangtenun.app.databinding.FragmentScannerBinding
 
@@ -18,7 +19,17 @@ class ScannerFragment : Fragment() {
     ): View {
         binding = FragmentScannerBinding.inflate(inflater, container, false)
 
+        val newScan = listOf(
+            binding.tvNewScan,
+            binding.btnNewScan,
+        )
+
+        for (view in newScan) {
+            view.setOnClickListener {
+                findNavController().navigate(R.id.navigation_search)
+            }
+        }
+
         return binding.root
     }
-
 }
