@@ -15,6 +15,11 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        manifestPlaceholders.putIfAbsent("appAuthRedirectScheme", "com.ruangtenun.app")
+
+        buildConfigField("String", "BASE_URL", "\"https://auth-api-942725723628.asia-southeast2.run.app/\"")
+        buildConfigField("String", "WEB_CLIENT_ID", "\"942725723628-k0g18dsk9lcf3n58ajcmpepfao9duqii.apps.googleusercontent.com\"")
     }
 
     buildTypes {
@@ -52,12 +57,29 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
+    // coroutine
+    implementation(libs.kotlinx.coroutines.android)
+
     // splashscreen
     implementation(libs.androidx.core.splashscreen)
 
     // navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
+
+    // appauth
+    implementation(libs.openid.appauth)
+
+    // retrofit
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
+    implementation(libs.okhttp)
+
+    // google credentials
+    implementation (libs.androidx.credentials)
+    implementation (libs.androidx.credentials.play.services.auth)
+    implementation (libs.googleid)
+    implementation (libs.play.services.auth)
 
     // camera
     implementation(libs.androidx.camera.camera2)

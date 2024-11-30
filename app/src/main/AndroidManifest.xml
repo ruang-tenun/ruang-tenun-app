@@ -14,17 +14,14 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/ic_logo"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/ic_logo"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:targetApi="31">
         <activity
-            android:name=".view.main.maps.MapsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.main.camera.CameraActivity"
+            android:name=".view.onboarding.OnboardingActivity"
             android:exported="false" />
         <activity
             android:name=".SplashScreen"
@@ -44,6 +41,12 @@
             android:exported="false" />
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.main.maps.MapsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.main.camera.CameraActivity"
             android:exported="false" />
 
         <meta-data

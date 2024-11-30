@@ -69,4 +69,12 @@
     <string name="crop_failed">Crop Failed</string>
     <string name="location_address_not_found">No address found for locatio</string>
     <string name="location_city_found">"You're in %1$s, %2$s"</string>
+    <string name="title_menu_1">Welcome to Ruang Tenun</string>
+    <string name="desc_menu_1">Find local weavers and buy products directly from them.</string>
+    <string name="skip">Skip</string>
+    <string name="next">Next</string>
+    <string name="title_menu_2">Scan the woven fabric you find</string>
+    <string name="desc_menu_2">With the Scan feature, you can easily identify the motif and origin of woven fabrics with just one snap!</string>
+    <string name="title_menu_3">Ready to explore the world of weaving?</string>
+    <string name="desc_menu_3">Let\'s start your adventure in Ruang Tenun! Login now!</string>
 </resources>
