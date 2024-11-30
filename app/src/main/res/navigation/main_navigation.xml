@@ -24,12 +24,6 @@
         tools:layout="@layout/fragment_scanner" />
 
     <fragment
-        android:id="@+id/navigation_catalog"
-        android:name="com.ruangtenun.app.view.main.catalog.CatalogFragment"
-        android:label="@string/title_catalog"
-        tools:layout="@layout/fragment_catalog" />
-
-    <fragment
         android:id="@+id/navigation_profile"
         android:name="com.ruangtenun.app.view.main.profile.ProfileFragment"
         android:label="@string/title_profile"
@@ -40,5 +34,23 @@
         android:name="com.ruangtenun.app.view.main.search.SearchFragment"
         android:label="@string/title_search"
         tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/navigation_partner"
+        android:name="com.ruangtenun.app.view.main.partner.PartnerFragment"
+        android:label="@string/your_product"
+        tools:layout="@layout/fragment_partner" />
+
+    <fragment
+        android:id="@+id/navigation_history"
+        android:name="com.ruangtenun.app.view.main.history.HistoryFragment"
+        android:label="@string/history_menu"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/navigation_upload_product"
+        android:name="com.ruangtenun.app.view.main.partner.UploadProductFragment"
+        android:label="@string/upload_product"
+        tools:layout="@layout/fragment_upload_product" />
 
 </navigation>

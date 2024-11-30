@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RuangTenunApp</string>
+    <string name="app_name">Ruang Tenun</string>
     <string name="title_home">Home</string>
     <string name="title_scanner">Scanner</string>
     <string name="title_profile">Profile</string>
@@ -46,10 +46,27 @@
     <string name="imageUpload">Uploaded Image</string>
     <string name="analyze_image">Analyze</string>
     <string name="title_search">Visual Search</string>
-    <string name="permission_accept">Permission request granted</string>
+    <string name="permission_granted">Permission request granted</string>
     <string name="permission_denied">Permission request denied</string>
     <string name="no_image_selected">No Image Selected</string>
     <string name="location_denied">Location permission is not granted</string>
     <string name="location_failed">Failed to get location</string>
     <string name="location_acquired">Location acquired</string>
+    <string name="navigate">Navigate</string>
+    <string name="your_product">Your Product</string>
+    <string name="profile_image">Profile Image</string>
+    <string name="upload_product">Upload Product</string>
+    <string name="empty_product_message">Your Product is empty</string>
+    <string name="empty_history_message">you don\'t have any history yet</string>
+    <string name="input_description_product">Explain Your Product</string>
+    <string name="map_type">Map Type</string>
+    <string name="map_default">Default</string>
+    <string name="map_satellite">Satellite</string>
+    <string name="map_terrain">Terrain</string>
+    <string name="map_hybrid">Hybrid</string>
+    <string name="close">Close</string>
+    <string name="crop_canceled">Crop Canceled</string>
+    <string name="crop_failed">Crop Failed</string>
+    <string name="location_address_not_found">No address found for locatio</string>
+    <string name="location_city_found">"You're in %1$s, %2$s"</string>
 </resources>

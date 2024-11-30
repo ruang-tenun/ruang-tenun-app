@@ -1,6 +1,7 @@
 package com.ruangtenun.app.view.main
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -24,11 +25,6 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
-            insets
-        }
 
         val navView: BottomNavigationView = binding.navView
 
@@ -36,16 +32,34 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         navController = navHostFragment.navController
 
-//        val appBarConfiguration = AppBarConfiguration(
-//            setOf(
-//                R.id.navigation_home,
-//                R.id.navigation_shop,
-//                R.id.navigation_scanner,
-//                R.id.navigation_catalog,
-//                R.id.navigation_profile,
-//            )
-//        )
-//        setupActionBarWithNavController(navController, appBarConfiguration)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            if (binding.navView.visibility == View.VISIBLE) {
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            } else {
+                v.setPadding(systemBars.left, systemBars.top, systemBars.right,  systemBars.bottom)
+            }
+            insets
+        }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.navigation_search, R.id.navigation_partner, R.id.navigation_history, R.id.navigation_upload_product -> {
+                    binding.navView.visibility = View.GONE
+                    adjustWindowInsetsForNavView(false)
+                }
+                else -> {
+                    binding.navView.visibility = View.VISIBLE
+                    adjustWindowInsetsForNavView(true)
+                }
+            }
+        }
+
         navView.setupWithNavController(navController)
+    }
+
+    private fun adjustWindowInsetsForNavView(isNavViewVisible: Boolean) {
+        binding.root.requestApplyInsets()
     }
 }

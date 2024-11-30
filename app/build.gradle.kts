@@ -47,6 +47,7 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.exifinterface)
+    implementation(libs.androidx.swiperefreshlayout)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,4 +66,10 @@ dependencies {
 
     // location
     implementation(libs.google.play.services.location)
+
+    // maps
+    implementation(libs.play.services.maps)
+
+    // ucrop
+    implementation (libs.ucrop)
 }

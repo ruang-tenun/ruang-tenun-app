@@ -1,8 +1,8 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+<resources>
+
     <style name="Base.Theme.RuangTenunApp" parent="Theme.Material3.Light.NoActionBar">
         <item name="android:fontFamily">@font/inter</item>
-        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:statusBarColor">@color/primary</item>
         <item name="android:windowLightStatusBar">true</item>
 
         <item name="colorPrimary">@color/primary</item>
@@ -11,7 +11,55 @@
         <item name="colorOnBackground">@color/onBackground</item>
     </style>
 
-    <style name="Theme.RuangTenunApp" parent="Base.Theme.RuangTenunApp" />
+    <style name="AppTheme" parent="Base.Theme.RuangTenunApp">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorPrimaryContainer">@color/primaryContainer</item>
+        <item name="colorOnPrimaryContainer">@color/onPrimaryContainer</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorOnSecondary">@color/onSecondary</item>
+        <item name="colorSecondaryContainer">@color/secondaryContainer</item>
+        <item name="colorOnSecondaryContainer">@color/onSecondaryContainer</item>
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="colorOnTertiary">@color/onTertiary</item>
+        <item name="colorTertiaryContainer">@color/tertiaryContainer</item>
+        <item name="colorOnTertiaryContainer">@color/onTertiaryContainer</item>
+        <item name="colorError">@color/error</item>
+        <item name="colorOnError">@color/onError</item>
+        <item name="colorErrorContainer">@color/errorContainer</item>
+        <item name="colorOnErrorContainer">@color/onErrorContainer</item>
+        <item name="android:colorBackground">@color/background</item>
+        <item name="colorOnBackground">@color/onBackground</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorSurfaceVariant">@color/surfaceVariant</item>
+        <item name="colorOnSurfaceVariant">@color/onSurfaceVariant</item>
+        <item name="colorOutline">@color/outline</item>
+        <item name="colorOutlineVariant">@color/outlineVariant</item>
+        <item name="colorSurfaceInverse">@color/inverseSurface</item>
+        <item name="colorOnSurfaceInverse">@color/inverseOnSurface</item>
+        <item name="colorPrimaryInverse">@color/inversePrimary</item>
+        <item name="colorPrimaryFixed">@color/primaryFixed</item>
+        <item name="colorOnPrimaryFixed">@color/onPrimaryFixed</item>
+        <item name="colorPrimaryFixedDim">@color/primaryFixedDim</item>
+        <item name="colorOnPrimaryFixedVariant">@color/onPrimaryFixedVariant</item>
+        <item name="colorSecondaryFixed">@color/secondaryFixed</item>
+        <item name="colorOnSecondaryFixed">@color/onSecondaryFixed</item>
+        <item name="colorSecondaryFixedDim">@color/secondaryFixedDim</item>
+        <item name="colorOnSecondaryFixedVariant">@color/onSecondaryFixedVariant</item>
+        <item name="colorTertiaryFixed">@color/tertiaryFixed</item>
+        <item name="colorOnTertiaryFixed">@color/onTertiaryFixed</item>
+        <item name="colorTertiaryFixedDim">@color/tertiaryFixedDim</item>
+        <item name="colorOnTertiaryFixedVariant">@color/onTertiaryFixedVariant</item>
+        <item name="colorSurfaceDim">@color/surfaceDim</item>
+        <item name="colorSurfaceBright">@color/surfaceBright</item>
+        <item name="colorSurfaceContainerLowest">@color/surfaceContainerLowest</item>
+        <item name="colorSurfaceContainerLow">@color/surfaceContainerLow</item>
+        <item name="colorSurfaceContainer">@color/surfaceContainer</item>
+        <item name="colorSurfaceContainerHigh">@color/surfaceContainerHigh</item>
+        <item name="colorSurfaceContainerHighest">@color/surfaceContainerHighest</item>
+    </style>
+
 
     <style name="BaseTextView" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:layout_width">0dp</item>
@@ -19,7 +67,7 @@
         <item name="android:layout_marginTop">16dp</item>
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:textColor">@color/grey</item>
+        <item name="android:textColor">@color/onPrimary</item>
     </style>
 
     <style name="BaseInputText">
@@ -37,8 +85,8 @@
         <item name="boxCornerRadiusBottomStart">10dp</item>
         <item name="boxCornerRadiusTopEnd">10dp</item>
         <item name="boxCornerRadiusTopStart">10dp</item>
-        <item name="boxStrokeErrorColor">@color/red</item>
-        <item name="helperTextTextColor">@color/green</item>
+        <item name="boxStrokeErrorColor">@color/error</item>
+        <item name="helperTextTextColor">@color/tertiary</item>
     </style>
 
     <style name="BaseButton" parent="Widget.Material3.Button">
@@ -56,14 +104,14 @@
         <item name="android:layout_marginTop">8dp</item>
         <item name="android:padding">16dp</item>
         <item name="cornerRadius">10dp</item>
-        <item name="strokeColor">@color/light_grey</item>
+        <item name="strokeColor">@color/onSecondary</item>
         <item name="iconTint">@null</item>
     </style>
 
     <style name="BaseTextTitle" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/scrim</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_margin">16dp</item>
         <item name="fontFamily">@font/inter</item>
@@ -74,12 +122,21 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">8dp</item>
-        <item name="android:textColor">@color/grey</item>
+        <item name="android:textColor">@color/secondary</item>
     </style>
 
     <style name="ClickableTextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/blue</item>
+        <item name="android:textColor">@color/primary</item>
     </style>
+
+    <style name="BaseCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardCornerRadius">12dp</item>
+        <item name="cardBackgroundColor">?attr/colorSurface</item>
+        <item name="cardElevation">4dp</item>
+        <item name="strokeColor">?attr/colorOutline</item>
+        <item name="strokeWidth">1dp</item>
+    </style>
+
 </resources>

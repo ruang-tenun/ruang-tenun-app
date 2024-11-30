@@ -128,7 +128,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:text="@string/login"
-        android:textColor="@color/blue"
+        android:textColor="@color/primary"
         app:layout_constraintEnd_toEndOf="@id/guideline"
         app:layout_constraintStart_toEndOf="@id/tv_sign_in"
         app:layout_constraintTop_toBottomOf="@id/register_button" />

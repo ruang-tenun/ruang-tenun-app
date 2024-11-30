@@ -1,4 +1,4 @@
-package com.ruangtenun.app.view.main.search
+package com.ruangtenun.app.view.main.partner
 
 import android.Manifest
 import android.app.Activity
@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ruangtenun.app.utils.ToastUtils.showToast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
@@ -18,15 +17,16 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import androidx.navigation.fragment.findNavController
 import com.ruangtenun.app.R
-import com.ruangtenun.app.databinding.FragmentSearchBinding
+import com.ruangtenun.app.databinding.FragmentUploadProductBinding
+import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.view.main.camera.CameraActivity
 import com.ruangtenun.app.view.main.camera.CameraActivity.Companion.CAMERAX_RESULT
 import com.yalantis.ucrop.UCrop
 import java.io.File
 
-class SearchFragment : Fragment() {
+class UploadProductFragment : Fragment() {
 
-    private lateinit var binding: FragmentSearchBinding
+    private lateinit var binding: FragmentUploadProductBinding
     private var currentImageUri: Uri? = null
 
     private val cropResultLauncher = registerForActivityResult(
@@ -58,11 +58,11 @@ class SearchFragment : Fragment() {
                     "cropped_image_${System.currentTimeMillis()}.jpg"
                 )
             )
-            val uCropIntent = UCrop.of(uri, destinationUri)
+            UCrop.of(uri, destinationUri)
                 .withMaxResultSize(1080, 1080)
-                .getIntent(requireContext())
-
-            cropResultLauncher.launch(uCropIntent)
+                .getIntent(requireContext()).let { cropIntent ->
+                    cropResultLauncher.launch(cropIntent)
+                }
         } else {
             showToast(requireContext(), getString(R.string.no_image_selected))
         }
@@ -80,11 +80,11 @@ class SearchFragment : Fragment() {
                         "cropped_image_${System.currentTimeMillis()}.jpg"
                     )
                 )
-                val uCropIntent = UCrop.of(imageUri, destinationUri)
+                UCrop.of(imageUri, destinationUri)
                     .withMaxResultSize(1080, 1080)
-                    .getIntent(requireContext())
-
-                cropResultLauncher.launch(uCropIntent)
+                    .getIntent(requireContext()).let { cropIntent ->
+                        cropResultLauncher.launch(cropIntent)
+                    }
             }
         }
     }
@@ -110,7 +110,7 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
+        binding = FragmentUploadProductBinding.inflate(inflater, container, false)
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
         if (!allPermissionsGranted()) {
@@ -148,6 +148,3 @@ class SearchFragment : Fragment() {
         private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
     }
 }
-
-
-

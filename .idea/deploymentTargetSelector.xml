@@ -4,17 +4,6 @@
     <selectionStates>
       <SelectionState runConfigName="Ruang_Tenun.app">
         <option name="selectionMode" value="DROPDOWN" />
-<<<<<<< HEAD
-        <DropdownSelection timestamp="2024-11-26T12:11:37.094005600Z">
-          <Target type="DEFAULT_BOOT">
-            <handle>
-              <DeviceId pluginId="PhysicalDevice" identifier="serial=8d7f9fa2" />
-            </handle>
-          </Target>
-        </DropdownSelection>
-        <DialogSelection />
-=======
->>>>>>> bf02b569cbb9e6415c1ad5c6b7299c5644c02924
       </SelectionState>
     </selectionStates>
   </component>

@@ -19,13 +19,11 @@ class ScannerFragment : Fragment() {
     ): View {
         binding = FragmentScannerBinding.inflate(inflater, container, false)
 
-        val newScan = listOf(
-            binding.tvNewScan,
-            binding.btnNewScan,
-        )
-
-        for (view in newScan) {
-            view.setOnClickListener {
+        binding.apply {
+            cardHistory.setOnClickListener {
+                findNavController().navigate(R.id.navigation_history)
+            }
+            cardNewScan.setOnClickListener {
                 findNavController().navigate(R.id.navigation_search)
             }
         }

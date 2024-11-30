@@ -16,6 +16,7 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.ruangtenun.app.R
 import com.ruangtenun.app.databinding.FragmentHomeBinding
+import com.ruangtenun.app.utils.ToastUtils.showToast
 import java.util.Locale
 
 class HomeFragment : Fragment() {
@@ -28,19 +29,9 @@ class HomeFragment : Fragment() {
             ActivityResultContracts.RequestPermission()
         ) { isGranted: Boolean ->
             if (isGranted) {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.permission_accept),
-                    Toast.LENGTH_LONG
-                )
-                    .show()
+                showToast(requireContext(), getString(R.string.permission_granted))
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.permission_denied),
-                    Toast.LENGTH_LONG
-                )
-                    .show()
+                showToast(requireContext(), getString(R.string.permission_denied))
             }
         }
 
@@ -74,35 +65,16 @@ class HomeFragment : Fragment() {
                 if (location != null) {
                     val latitude = location.latitude
                     val longitude = location.longitude
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.location_acquired),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    Log.d("Location", "Latitude: $latitude, Longitude: $longitude")
+                    showToast(requireContext(), getString(R.string.location_acquired))
                     getCityName(latitude, longitude)
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.location_failed),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    showToast(requireContext(), getString(R.string.location_failed))
                 }
             }.addOnFailureListener {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.location_failed),
-                    Toast.LENGTH_SHORT
-                )
-                    .show()
+                showToast(requireContext(), getString(R.string.location_failed))
             }
         } catch (e: SecurityException) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.location_denied),
-                Toast.LENGTH_SHORT
-            ).show()
+            showToast(requireContext(), getString(R.string.location_denied))
         }
     }
 
@@ -113,18 +85,14 @@ class HomeFragment : Fragment() {
             if (!addresses.isNullOrEmpty()) {
                 val cityName = addresses[0].locality
                 val countryName = addresses[0].countryName
-                Log.d("City", "City: $cityName, Country: $countryName")
-                Toast.makeText(
-                    requireContext(),
-                    "You're in $cityName, $countryName",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val formattedMessage =
+                    requireContext().getString(R.string.location_city_found, cityName, countryName)
+                showToast(requireContext(), formattedMessage)
             } else {
-                Log.e("Geocoder", "No address found for location")
+                showToast(requireContext(), getString(R.string.location_address_not_found))
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e("Geocoder", "Error: ${e.message}")
         }
     }
 
