@@ -24,7 +24,8 @@
             android:name=".view.onboarding.OnboardingActivity"
             android:exported="false" />
         <activity
-            android:name=".SplashScreen"
+            android:name=".SplashScreenActivity"
+            android:theme="@style/Theme.App.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

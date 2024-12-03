@@ -28,14 +28,14 @@
         android:layout_marginEnd="143dp"
         android:layout_marginBottom="8dp"
         android:fontFamily="@font/inter"
-        android:text="Saeful Rohman"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/tvEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="saefulrohman" />
 
     <TextView
         android:id="@+id/tvEmail"
@@ -45,11 +45,11 @@
         android:layout_marginEnd="114dp"
         android:layout_marginBottom="131dp"
         android:fontFamily="@font/inter"
-        android:text="saefulrohman@gmail.com"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/tvName" />
+        app:layout_constraintTop_toBottomOf="@+id/tvName"
+        tools:text="saefulrohman@gmail.com" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/cardFavorite"
@@ -173,6 +173,48 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="@font/inter"
                 android:text="@string/your_product"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardLogout"
+        style="@style/BaseCard"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cardProduct">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvLogout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawablePadding="16dp"
+                android:fontFamily="@font/inter"
+                android:text="@string/title_logout"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/ic_right_row_24dp" />
+
+            <TextView
+                android:id="@+id/tvLogoutDesc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/inter"
+                android:text="@string/title_logout"
                 android:textSize="14sp" />
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

@@ -16,10 +16,8 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        manifestPlaceholders.putIfAbsent("appAuthRedirectScheme", "com.ruangtenun.app")
-
         buildConfigField("String", "BASE_URL", "\"https://auth-api-942725723628.asia-southeast2.run.app/\"")
-        buildConfigField("String", "WEB_CLIENT_ID", "\"942725723628-k0g18dsk9lcf3n58ajcmpepfao9duqii.apps.googleusercontent.com\"")
+        buildConfigField("String", "CLIENT_ID", "\"942725723628-k0g18dsk9lcf3n58ajcmpepfao9duqii.apps.googleusercontent.com\"")
     }
 
     buildTypes {
@@ -67,13 +65,10 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-    // appauth
-    implementation(libs.openid.appauth)
-
     // retrofit
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.okhttp)
+    implementation(libs.logging.interceptor)
 
     // google credentials
     implementation (libs.androidx.credentials)
@@ -94,4 +89,10 @@ dependencies {
 
     // ucrop
     implementation (libs.ucrop)
+
+    // datastore
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.activity.ktx)
 }

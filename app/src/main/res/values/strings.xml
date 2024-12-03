@@ -77,4 +77,5 @@
     <string name="desc_menu_2">With the Scan feature, you can easily identify the motif and origin of woven fabrics with just one snap!</string>
     <string name="title_menu_3">Ready to explore the world of weaving?</string>
     <string name="desc_menu_3">Let\'s start your adventure in Ruang Tenun! Login now!</string>
+    <string name="title_logout">Logout</string>
 </resources>

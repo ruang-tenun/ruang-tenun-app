@@ -24,8 +24,6 @@ class AuthActivity : AppCompatActivity() {
             insets
         }
 
-
-
         val loginFragment = LoginFragment()
         supportFragmentManager.beginTransaction()
             .replace(R.id.fragment_container, loginFragment)

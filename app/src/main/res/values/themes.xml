@@ -4,11 +4,6 @@
         <item name="android:fontFamily">@font/inter</item>
         <item name="android:statusBarColor">@color/primary</item>
         <item name="android:windowLightStatusBar">true</item>
-
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorOnPrimary">@color/onPrimary</item>
-        <item name="android:colorBackground">@color/background</item>
-        <item name="colorOnBackground">@color/onBackground</item>
     </style>
 
     <style name="AppTheme" parent="Base.Theme.RuangTenunApp">
@@ -60,6 +55,10 @@
         <item name="colorSurfaceContainerHighest">@color/surfaceContainerHighest</item>
     </style>
 
+    <style name="Theme.App.SplashScreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/secondary</item>
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+    </style>
 
     <style name="BaseTextView" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:layout_width">0dp</item>
@@ -67,7 +66,7 @@
         <item name="android:layout_marginTop">16dp</item>
         <item name="android:layout_marginStart">16dp</item>
         <item name="android:layout_marginEnd">16dp</item>
-        <item name="android:textColor">@color/onPrimary</item>
+        <item name="android:textColor">@color/primary</item>
     </style>
 
     <style name="BaseInputText">
@@ -111,7 +110,6 @@
     <style name="BaseTextTitle" parent="TextAppearance.Material3.HeadlineLarge">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">@color/scrim</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_margin">16dp</item>
         <item name="fontFamily">@font/inter</item>
