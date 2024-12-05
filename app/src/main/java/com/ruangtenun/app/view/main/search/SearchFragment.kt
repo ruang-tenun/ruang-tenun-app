@@ -26,7 +26,8 @@ import java.io.File
 
 class SearchFragment : Fragment() {
 
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private var currentImageUri: Uri? = null
 
     private val cropResultLauncher = registerForActivityResult(
@@ -110,7 +111,7 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
         if (!allPermissionsGranted()) {
@@ -126,7 +127,7 @@ class SearchFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        return binding.root
+        return _binding!!.root
     }
 
     private fun startGallery() {
@@ -146,6 +147,11 @@ class SearchFragment : Fragment() {
 
     companion object {
         private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

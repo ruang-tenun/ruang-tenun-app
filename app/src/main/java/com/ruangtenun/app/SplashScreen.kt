@@ -27,18 +27,18 @@ class SplashScreen : AppCompatActivity() {
             insets
         }
         installSplashScreen()
-//        navigateToHomeActivity()
+        navigateToHomeActivity()
 //        navigateToAuthActivity()
 //        navigateToOnboardingActivity()
 
-        val sharedPreferences = getSharedPreferences("appPreferences", MODE_PRIVATE)
-        val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
-
-        if (isFirstLaunch) {
-            navigateToOnboardingActivity()
-        } else {
-            navigateToAuthActivity()
-        }
+//        val sharedPreferences = getSharedPreferences("appPreferences", MODE_PRIVATE)
+//        val isFirstLaunch = sharedPreferences.getBoolean("isFirstLaunch", true)
+//
+//        if (isFirstLaunch) {
+//            navigateToOnboardingActivity()
+//        } else {
+//            navigateToAuthActivity()
+//        }
     }
 
     private fun navigateToHomeActivity() {

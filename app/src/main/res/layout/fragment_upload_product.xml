@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".view.main.partner.UploadProductFragment">
 
-    <!-- Toolbar -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
@@ -17,7 +16,6 @@
         app:navigationIcon="@drawable/ic_back"
         app:title="@string/upload_product" />
 
-    <!-- ScrollView -->
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="0dp"
@@ -27,12 +25,10 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/toolbar">
 
-        <!-- Container dalam ScrollView -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <!-- Preview Image -->
             <ImageView
                 android:id="@+id/previewImage"
                 android:layout_width="0dp"
@@ -45,7 +41,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Button Row -->
             <Button
                 android:id="@+id/btnUploadImage"
                 style="?attr/materialButtonOutlinedStyle"
@@ -70,17 +65,15 @@
                 app:layout_constraintStart_toEndOf="@id/btnUploadImage"
                 app:layout_constraintTop_toBottomOf="@id/previewImage" />
 
-            <!-- Product Name Input -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tfProductNameLayout"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
-                android:hint="@string/search"
+                android:hint="@string/product_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnUploadImage"
-                app:startIconDrawable="@drawable/ic_search_24dp">
+                app:layout_constraintTop_toBottomOf="@id/btnUploadImage">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/tfProductName"
@@ -88,7 +81,6 @@
                     android:layout_height="wrap_content" />
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- Description Input -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/tfDescriptionLayout"
                 android:layout_width="0dp"
@@ -105,6 +97,59 @@
                     android:layout_height="300dp"
                     android:gravity="top" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tfLinkProductLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:hint="@string/product_link"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tfDescriptionLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tfLinkProduct"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tfLocationLayout"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:hint="@string/location_offline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tfLinkProductLayout">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/tfLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/btnNavigateToMap"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="@string/navigate_to_map"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tfLocationLayout" />
+
+            <Button
+                android:id="@+id/btnUpload"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="@string/upload_product"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnNavigateToMap" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

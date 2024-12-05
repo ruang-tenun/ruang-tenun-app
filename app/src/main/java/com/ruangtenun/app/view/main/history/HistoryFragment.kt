@@ -12,13 +12,14 @@ import com.ruangtenun.app.databinding.FragmentHistoryBinding
 
 class HistoryFragment : Fragment() {
 
-    private lateinit var binding: FragmentHistoryBinding
+    private var _binding: FragmentHistoryBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHistoryBinding.inflate(inflater, container, false)
+        _binding = FragmentHistoryBinding.inflate(inflater, container, false)
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
@@ -26,7 +27,12 @@ class HistoryFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        return binding.root
+        return _binding!!.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

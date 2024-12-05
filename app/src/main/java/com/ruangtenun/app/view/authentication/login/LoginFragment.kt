@@ -1,5 +1,6 @@
 package com.ruangtenun.app.view.authentication.login
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -7,13 +8,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.tasks.Task
 import com.ruangtenun.app.R
 import com.ruangtenun.app.databinding.FragmentLoginBinding
@@ -23,11 +27,22 @@ import kotlinx.coroutines.launch
 class LoginFragment : Fragment() {
 
     private var _binding: FragmentLoginBinding? = null
-
     private val binding get() = _binding!!
 
     private lateinit var googleSignInClient: GoogleSignInClient
-    private val RC_SIGN_IN = 100
+
+    // Menyiapkan Activity Result API untuk Google Sign-In
+    private val googleSignInResultLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+            handleSignInResult(task)
+        } else {
+            Log.e("GoogleSignIn", "Login gagal atau dibatalkan. resultCode: ${result.resultCode}")
+            Toast.makeText(requireContext(), "Login gagal atau dibatalkan.", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,8 +51,9 @@ class LoginFragment : Fragment() {
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        // Setup Google Sign-In options
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("942725723628-lphe17c5agvd83l4jo4fft1u6ribm329.apps.googleusercontent.com")
+            .requestIdToken("942725723628-9hmggo0p6esoksqm1l6ma5h2tlghu1fl.apps.googleusercontent.com") // Ganti dengan Android Client ID yang benar
             .requestEmail()
             .build()
 
@@ -54,46 +70,44 @@ class LoginFragment : Fragment() {
                     .commit()
             }
             googleLogin.setOnClickListener {
-                lifecycleScope.launch {
-                    loginWithGoogle()
-                }
+                googleSignInResultLauncher.launch(googleSignInClient.signInIntent)
             }
         }
 
         return view
     }
 
-    private fun loginWithGoogle() {
-        val signInIntent = googleSignInClient.signInIntent
-        startActivityForResult(signInIntent, RC_SIGN_IN)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        Log.d("GoogleSignIn", "requestCode: $requestCode, resultCode: $resultCode, data: $data")
-
-        if (requestCode == RC_SIGN_IN) {
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            handleSignInResult(task)
-        }
-    }
-
-    private fun handleSignInResult(data: Task<GoogleSignInAccount?>) {
+    private fun handleSignInResult(task: Task<GoogleSignInAccount?>) {
         try {
-            val account = data.getResult(ApiException::class.java)
+            val account = task.getResult(ApiException::class.java)
             val email = account?.email
             val displayName = account?.displayName
             val idToken = account?.idToken
 
-            Toast.makeText(requireContext(), "Login berhasil: $displayName", Toast.LENGTH_SHORT)
-                .show()
-            Log.d("GoogleSignIn", "Email: $email, ID Token: $idToken")
+            Log.d("GoogleSignIn", "Login berhasil: $displayName, Email: $email")
+            Toast.makeText(requireContext(), "Login berhasil: $displayName", Toast.LENGTH_SHORT).show()
+
+            // Kirim token ke server untuk verifikasi jika diperlukan
 
         } catch (e: ApiException) {
-            Log.e("GoogleSignIn", "Login gagal: ${e.statusCode}")
-            Toast.makeText(requireContext(), "Login gagal: ${e.message}", Toast.LENGTH_SHORT).show()
+            // Menampilkan status code dan pesan kesalahan lebih detail
+            Log.e("GoogleSignIn", "Login gagal. Status Code: ${e.statusCode}, Message: ${e.message}")
+            Toast.makeText(requireContext(), "Login gagal: ${e.message}, Status Code: ${e.statusCode}", Toast.LENGTH_SHORT).show()
+
+            // Status codes dapat membantu memecahkan masalah
+            when (e.statusCode) {
+                CommonStatusCodes.SIGN_IN_REQUIRED -> {
+                    // Sign-in diperlukan, coba lagi atau tampilkan UI
+                }
+                CommonStatusCodes.NETWORK_ERROR -> {
+                    // Cek koneksi internet
+                }
+                else -> {
+                    // Lain-lain: Masalah umum yang perlu penanganan lebih lanjut
+                }
+            }
         }
     }
 }
+
+

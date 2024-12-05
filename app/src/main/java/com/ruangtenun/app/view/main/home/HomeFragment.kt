@@ -21,7 +21,8 @@ import java.util.Locale
 
 class HomeFragment : Fragment() {
 
-    private lateinit var binding: FragmentHomeBinding
+    private var _binding: FragmentHomeBinding? = null
+    private val binding get() = _binding!!
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private val requestPermissionLauncher =
@@ -39,12 +40,12 @@ class HomeFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         checkLocationPermission()
 
-        return binding.root
+        return _binding!!.root
     }
 
     private fun checkLocationPermission() {
@@ -98,5 +99,10 @@ class HomeFragment : Fragment() {
 
     companion object {
         private const val LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

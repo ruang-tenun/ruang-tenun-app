@@ -35,8 +35,6 @@
     <string name="back_button">Back Button</string>
     <string name="invalid_format_email">Format email tidak valid</string>
     <string name="empty_email_error">Email tidak boleh kosong</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="search_description">Search for an woven by taking a photo or uploading an image</string>
     <string name="upload_image">Upload An Image</string>
     <string name="take_photo">Take Photo</string>
@@ -77,4 +75,16 @@
     <string name="desc_menu_2">With the Scan feature, you can easily identify the motif and origin of woven fabrics with just one snap!</string>
     <string name="title_menu_3">Ready to explore the world of weaving?</string>
     <string name="desc_menu_3">Let\'s start your adventure in Ruang Tenun! Login now!</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_link">Product Link</string>
+    <string name="location_offline">offline store location if any</string>
+    <string name="navigate_to_map">View Maps</string>
+    <string name="select_location">Select Location</string>
+    <string name="location_error">Location Not Found</string>
+    <string name="detail_product">Detail Product</string>
+    <string name="product_description">"Product Description: "</string>
+    <string name="offline_location">Offline Location:</string>
+    <string name="product_image">Product Image</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

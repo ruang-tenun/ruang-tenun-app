@@ -53,4 +53,10 @@
         android:label="@string/upload_product"
         tools:layout="@layout/fragment_upload_product" />
 
+    <fragment
+        android:id="@+id/navigation_detail"
+        android:name="com.ruangtenun.app.view.main.detail.DetailFragment"
+        android:label="@string/detail_product"
+        tools:layout="@layout/fragment_detail" />
+
 </navigation>

@@ -1,5 +1,7 @@
 package com.ruangtenun.app.view.main.maps
 
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.os.Bundle
@@ -10,10 +12,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.MarkerOptions
 import com.ruangtenun.app.R
 import com.ruangtenun.app.databinding.ActivityMapsBinding
 
@@ -30,7 +34,6 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 getMyLocation()
             }
         }
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,6 +81,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         } catch (exception: Resources.NotFoundException) {
             Log.e(TAG, "Can't find style. Error: ", exception)
         }
+
+        mMap.setOnMapClickListener { latLng ->
+            mMap.clear()
+            mMap.addMarker(MarkerOptions().position(latLng).title("Lokasi Terpilih"))
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+
+            binding.btnConfirmLocation.setOnClickListener {
+                val resultIntent = Intent().apply {
+                    putExtra("latitude", latLng.latitude)
+                    putExtra("longitude", latLng.longitude)
+                }
+                setResult(Activity.RESULT_OK, resultIntent)
+                finish()
+            }
+        }
+
+        getMyLocation()
     }
 
     private fun getMyLocation() {

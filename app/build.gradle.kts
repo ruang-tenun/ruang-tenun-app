@@ -1,6 +1,10 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -18,8 +22,22 @@ android {
 
         manifestPlaceholders.putIfAbsent("appAuthRedirectScheme", "com.ruangtenun.app")
 
-        buildConfigField("String", "BASE_URL", "\"https://auth-api-942725723628.asia-southeast2.run.app/\"")
-        buildConfigField("String", "WEB_CLIENT_ID", "\"942725723628-k0g18dsk9lcf3n58ajcmpepfao9duqii.apps.googleusercontent.com\"")
+        val p = Properties()
+        p.load(project.rootProject.file("local.properties").reader())
+
+        val baseUrlAuth: String = p.getProperty("BASE_URL_AUTH")
+        buildConfigField(
+            "String",
+            "BASE_URL_AUTH",
+            "\"$baseUrlAuth\""
+        )
+
+        val webClientId: String = p.getProperty("WEB_CLIENT_ID")
+        buildConfigField(
+            "String",
+            "WEB_CLIENT_ID",
+            "\"$webClientId\""
+        )
     }
 
     buildTypes {
@@ -72,14 +90,17 @@ dependencies {
 
     // retrofit
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
     implementation(libs.okhttp)
 
+    // login interceptor
+    implementation(libs.logging.interceptor)
+    implementation(libs.converter.gson)
+
     // google credentials
-    implementation (libs.androidx.credentials)
-    implementation (libs.androidx.credentials.play.services.auth)
-    implementation (libs.googleid)
-    implementation (libs.play.services.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.play.services.auth)
 
     // camera
     implementation(libs.androidx.camera.camera2)
@@ -93,5 +114,10 @@ dependencies {
     implementation(libs.play.services.maps)
 
     // ucrop
-    implementation (libs.ucrop)
+    implementation(libs.ucrop)
+
+    // room
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.room.compiler)
+    implementation(libs.androidx.room.ktx)
 }
