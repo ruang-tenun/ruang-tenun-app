@@ -2,6 +2,7 @@ package com.ruangtenun.app.utils
 
 import android.content.Context
 import android.net.Uri
+import com.ruangtenun.app.R
 import java.io.File
 import java.io.FileOutputStream
 

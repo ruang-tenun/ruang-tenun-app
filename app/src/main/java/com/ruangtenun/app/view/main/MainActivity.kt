@@ -8,8 +8,6 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.ruangtenun.app.R
@@ -45,7 +43,7 @@ class MainActivity : AppCompatActivity() {
 
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.navigation_search, R.id.navigation_partner, R.id.navigation_history, R.id.navigation_upload_product -> {
+                R.id.navigation_search, R.id.navigation_partner, R.id.navigation_history, R.id.navigation_upload_product, R.id.navigation_result -> {
                     binding.navView.visibility = View.GONE
                     adjustWindowInsetsForNavView(false)
                 }

@@ -5,7 +5,7 @@
     <string name="title_profile">Profile</string>
     <string name="title_catalog">Catalog</string>
     <string name="tagline_home">What are you looking for today</string>
-    <string name="username">Hi Saeful</string>
+    <string name="username">Hi %1$s</string>
     <string name="favorite">Favorite</string>
     <string name="favorite_desc">Your Favorite Woven Fabric</string>
     <string name="settings">Settings</string>
@@ -91,4 +91,25 @@
     <string name="product_photo">Preview Photo Of Product</string>
     <string name="categories_option">Choose Categories</string>
     <string name="image_save_failed">Failed Save Image</string>
+    <string name="title_logout">Logout</string>
+    <string name="login_failed">Login gagal</string>
+    <string name="feature_not_yet_available">Fitur belum tersedia</string>
+    <string name="ok">OK</string>
+    <string name="email_and_password_cannot_be_empty">Email dan password tidak boleh kosong.</string>
+    <string name="try_again">Coba Lagi</string>
+    <string name="login_successful">Login berhasil</string>
+    <string name="you_have_successfully_logged_in">Anda berhasil login</string>
+    <string name="registration_successful">Register berhasil</string>
+    <string name="register_failed">Register gagal</string>
+    <string name="are_you_sure_want_to_logout">Apakah Anda yakin ingin keluar?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="registration_failed_with_error">Registrasi gagal: %1$s</string>
+    <string name="login_failed_with_error">Login gagal: %1$s</string>
+    <string name="result_text">result class</string>
+    <string name="title_result">Prediction Result</string>
+    <string name="string_save_history">Save History</string>
+    <string name="save_image">Save Prediction To History</string>
+    <string name="are_you_sure_want_to_save">Are You Sure want to save?</string>
+    <string name="failed_to_save_image">Failed To Save Image</string>
 </resources>

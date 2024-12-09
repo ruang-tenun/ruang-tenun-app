@@ -4,20 +4,23 @@ import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.ruangtenun.app.R
+import com.ruangtenun.app.data.local.pref.UserModel
 import com.ruangtenun.app.databinding.FragmentHomeBinding
 import com.ruangtenun.app.utils.ToastUtils.showToast
+import com.ruangtenun.app.utils.ViewModelFactory
+import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
 import java.util.Locale
+import kotlin.getValue
 
 class HomeFragment : Fragment() {
 
@@ -42,9 +45,16 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
+        val authViewModel: AuthViewModel by viewModels {
+            ViewModelFactory.getInstance(requireActivity().application)
+        }
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         checkLocationPermission()
 
+        authViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            displayUserData(user)
+        }
         return _binding!!.root
     }
 
@@ -74,7 +84,7 @@ class HomeFragment : Fragment() {
             }.addOnFailureListener {
                 showToast(requireContext(), getString(R.string.location_failed))
             }
-        } catch (e: SecurityException) {
+        } catch (_: SecurityException) {
             showToast(requireContext(), getString(R.string.location_denied))
         }
     }
@@ -94,6 +104,12 @@ class HomeFragment : Fragment() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+    }
+
+    private fun displayUserData(user: UserModel?) {
+        if (user != null) {
+            binding.tvUsername.text = getString(R.string.username, user.name)
         }
     }
 

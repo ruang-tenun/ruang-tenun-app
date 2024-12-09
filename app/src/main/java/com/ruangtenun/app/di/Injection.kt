@@ -1,7 +1,12 @@
 package com.ruangtenun.app.di
 
+import android.content.Context
+import com.ruangtenun.app.data.repository.AuthRepository
+import com.ruangtenun.app.data.repository.PredictRepository
 import android.app.Application
 import com.ruangtenun.app.data.local.database.WeavenFabricDatabase
+import com.ruangtenun.app.data.local.pref.UserPreference
+import com.ruangtenun.app.data.local.pref.dataStore
 import com.ruangtenun.app.data.remote.api.ApiConfig
 import com.ruangtenun.app.data.repository.CatalogRepository
 import com.ruangtenun.app.data.repository.ProductRepository
@@ -19,8 +24,20 @@ object Injection {
         return ProductRepository.getInstance(apiServiceProduct)
     }
 
+    fun provideAuthRepository(context: Context): AuthRepository {
+        val pref = UserPreference.getInstance(context.dataStore)
+        val apiService = ApiConfig.getAuthService()
+        return AuthRepository.getInstance(pref, apiService)
+    }
+
+    fun providePredictRepository(): PredictRepository {
+        val apiService = ApiConfig.getPredictService()
+        return PredictRepository.getInstance(apiService)
+    }
+
     fun provideCatalogRepository(): CatalogRepository {
         val apiServiceCatalog = ApiConfig.getCatalogService()
         return CatalogRepository.getInstance(apiServiceCatalog)
     }
+
 }

@@ -21,6 +21,9 @@ class HistoryViewModel(
     private val _allHistoryState = MutableLiveData<ResultState<List<ClassificationHistory>>>()
     val allHistoryState: LiveData<ResultState<List<ClassificationHistory>>> get() = _allHistoryState
 
+    private val _saveHistoryState = MutableLiveData<ResultState<String>>()
+    val saveHistoryState: LiveData<ResultState<String>> get() = _saveHistoryState
+
     init {
         fetchAllHistory()
     }
@@ -35,8 +38,8 @@ class HistoryViewModel(
 
     fun savePhotoAndHistory(classificationHistory: ClassificationHistory) {
         viewModelScope.launch {
-            historyRepository.insertClassificationHistory(classificationHistory)
-            fetchAllHistory()
+            val result = historyRepository.insertClassificationHistory(classificationHistory)
+            _saveHistoryState.postValue(result)
         }
     }
 }

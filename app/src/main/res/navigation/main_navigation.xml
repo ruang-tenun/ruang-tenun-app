@@ -58,6 +58,11 @@
         android:name="com.ruangtenun.app.view.main.partner.UploadProductFragment"
         android:label="@string/upload_product"
         tools:layout="@layout/fragment_upload_product" />
+    <fragment
+        android:id="@+id/navigation_result"
+        android:name="com.ruangtenun.app.view.main.result.ResultFragment"
+        android:label="@string/title_result"
+        tools:layout="@layout/fragment_result" />
 
     <fragment
         android:id="@+id/navigation_detail"

@@ -6,53 +6,41 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ruangtenun.app.utils.ToastUtils.showToast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.gson.Gson
 import com.ruangtenun.app.R
-import com.ruangtenun.app.data.model.ClassificationHistory
-import com.ruangtenun.app.data.remote.api.ApiConfig
-import com.ruangtenun.app.data.remote.response.FileUploadResponse
-import com.ruangtenun.app.data.repository.HistoryRepository
+import com.ruangtenun.app.data.remote.response.PredictResponse
 import com.ruangtenun.app.databinding.FragmentSearchBinding
-import com.ruangtenun.app.utils.FileUtils
+import com.ruangtenun.app.utils.DialogUtils.showDialog
+import com.ruangtenun.app.utils.ResultState
+import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
 import com.ruangtenun.app.utils.reduceFileImage
 import com.ruangtenun.app.utils.uriToFile
 import com.ruangtenun.app.view.main.camera.CameraActivity
 import com.ruangtenun.app.view.main.camera.CameraActivity.Companion.CAMERAX_RESULT
-import com.ruangtenun.app.viewmodel.history.HistoryViewModel
+import com.ruangtenun.app.view.main.result.ResultFragment
+import com.ruangtenun.app.viewmodel.search.SearchViewModel
 import com.yalantis.ucrop.UCrop
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import retrofit2.HttpException
 import java.io.File
-import java.io.FileOutputStream
+import kotlin.getValue
 
 class SearchFragment : Fragment() {
 
-    private var _binding: FragmentSearchBinding? = null
-    private val binding get() = _binding!!
+    private lateinit var binding: FragmentSearchBinding
     private var currentImageUri: Uri? = null
-
-    private val historyViewModel: HistoryViewModel by viewModels {
-        ViewModelFactory.getInstance(requireActivity().application)
-    }
 
     private val cropResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -135,8 +123,12 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
+        binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
+
+        val searchViewModel: SearchViewModel by viewModels {
+            ViewModelFactory.getInstance(requireActivity().application)
+        }
 
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(CAMERA_PERMISSION)
@@ -145,14 +137,16 @@ class SearchFragment : Fragment() {
         binding.apply {
             btnUploadImage.setOnClickListener { startGallery() }
             btnCamera.setOnClickListener { startCameraX() }
-            btnAnalyze.setOnClickListener { uploadImage() }
+            btnAnalyze.setOnClickListener { scanImage(searchViewModel) }
         }
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
 
-        return _binding!!.root
+        observeView(searchViewModel, currentImageUri)
+
+        return binding.root
     }
 
     private fun startGallery() {
@@ -170,86 +164,60 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun uploadImage() {
-        currentImageUri?.let { uri ->
-            val filename = "image_${System.currentTimeMillis()}.jpg"
-            val savedImagePath = FileUtils.saveImageToInternalStorage(requireContext(), uri, filename)
-
-            if (savedImagePath != null) {
-                val imageFile = File(savedImagePath).reduceFileImage()
-                val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
-                val multipartBody = MultipartBody.Part.createFormData(
-                    "image",
-                    imageFile.name,
-                    requestImageFile
-                )
-
-                lifecycleScope.launch {
-                    try {
-                        val apiService = ApiConfig.getPredictService()
-                        val successResponse = apiService.uploadImage(multipartBody)
-
-                        successResponse.result?.let { predictionResult ->
-                            val history = ClassificationHistory(
-                                weavingName = predictionResult,
-                                confidenceScore = 0.95,
-                                imageUrl = savedImagePath,
-                                createdAt = System.currentTimeMillis().toString()
-                            )
-                            historyViewModel.savePhotoAndHistory(history)
-
-                            MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Hasil Prediksi")
-                                .setMessage(predictionResult)
-                                .setPositiveButton("Close") { dialog, _ ->
-                                    dialog.dismiss()
-                                }
-                                .show()
-                        }
-                    } catch (e: HttpException) {
-                        val errorBody = e.response()?.errorBody()?.string()
-                        val errorResponse = Gson().fromJson(errorBody, FileUploadResponse::class.java)
-                        showToast(requireContext(), "Error: ${errorResponse.result}")
-                    } catch (e: Exception) {
-                        showToast(requireContext(), "Terjadi kesalahan, coba lagi.")
-                    }
+    private fun observeView(searchViewModel: SearchViewModel, imageUri: Uri? = null) {
+        searchViewModel.predictResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResultState.Error -> {
+                    showLoading(false)
+                    showDialog(
+                        requireContext(),
+                        "gagal memprediksi",
+                        result.error,
+                        getString(R.string.ok)
+                    )
                 }
-            } else {
-                showToast(requireContext(), getString(R.string.image_save_failed))
+                is ResultState.Loading -> showLoading(true)
+                is ResultState.Success -> {
+                    showLoading(false)
+                    moveToResult(result.data, currentImageUri)
+                }
             }
-        } ?: showToast(requireContext(), getString(R.string.empty_image_warning))
+        }
     }
 
+    private fun scanImage(searchViewModel: SearchViewModel) {
+        currentImageUri?.let { uri ->
+            val imageFile = uriToFile(uri, requireContext()).reduceFileImage()
+
+            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
+                "image",
+                imageFile.name,
+                requestImageFile
+            )
+
+            searchViewModel.predict(multipartBody)
+        }
+    }
+
+    private fun moveToResult(predictResponse: PredictResponse, imageUri: Uri? = null) {
+
+        val resultFragment = ResultFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(ResultFragment.PREDICT_RESULT, predictResponse)
+                putParcelable(ResultFragment.PREDICT_IMAGE, imageUri)
+            }
+        }
+
+        findNavController().navigate(R.id.navigation_result, resultFragment.arguments)
+    }
 
     private fun showLoading(isLoading: Boolean) {
-        binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    private fun saveImageToInternalStorage(uri: Uri, filename: String): String? {
-        return try {
-            val inputStream = requireContext().contentResolver.openInputStream(uri)
-            val file = File(requireContext().filesDir, filename)
-            val outputStream = FileOutputStream(file)
-
-            inputStream?.copyTo(outputStream)
-
-            inputStream?.close()
-            outputStream.close()
-
-            file.absolutePath
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
+        binding.loading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     companion object {
         private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
 

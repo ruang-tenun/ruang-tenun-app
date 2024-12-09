@@ -20,8 +20,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        manifestPlaceholders.putIfAbsent("appAuthRedirectScheme", "com.ruangtenun.app")
-
         val p = Properties()
         p.load(project.rootProject.file("local.properties").reader())
 
@@ -31,6 +29,7 @@ android {
             "BASE_URL_AUTH",
             "\"$baseUrlAuth\""
         )
+
 
         val webClientId: String = p.getProperty("WEB_CLIENT_ID")
         buildConfigField(
@@ -99,11 +98,9 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-    // appauth
-    implementation(libs.openid.appauth)
-
     // retrofit
     implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     implementation(libs.okhttp)
 
     // login interceptor
@@ -141,4 +138,11 @@ dependencies {
 
     // glide
     implementation(libs.glide)
+    implementation (libs.ucrop)
+
+    // datastore
+    implementation(libs.androidx.datastore.preferences)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.activity.ktx)
 }

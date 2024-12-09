@@ -7,45 +7,55 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-const val BASE_URL_PREDICT = BuildConfig.BASE_URL_PREDICT
-const val BASE_URL_PRODUCT = BuildConfig.BASE_URL_PRODUCT
+object ApiConfig {
 
-class ApiConfig {
-    companion object {
+    private const val BASE_URL_AUTH = BuildConfig.BASE_URL_AUTH
+    private const val BASE_URL_PREDICT = BuildConfig.BASE_URL_PREDICT
 
-        fun getPredictService(): ApiServicePredict {
-            val loggingInterceptor =
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client = OkHttpClient.Builder()
-                .addInterceptor(loggingInterceptor)
-                .connectTimeout(60, TimeUnit.SECONDS)
-                .writeTimeout(60, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
-                .build()
-            val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL_PREDICT)
-                .addConverterFactory(GsonConverterFactory.create())
-                .client(client)
-                .build()
-            return retrofit.create(ApiServicePredict::class.java)
+    private val client: OkHttpClient by lazy {
+        val loggingInterceptor = if (BuildConfig.DEBUG) {
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        } else {
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
         }
 
-        fun getProductService(): ApiServiceProduct {
-            val loggingInterceptor =
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
-            val retrofit = Retrofit.Builder().baseUrl(BASE_URL_PRODUCT)
-                .addConverterFactory(GsonConverterFactory.create()).client(client).build()
-            return retrofit.create(ApiServiceProduct::class.java)
-        }
+        OkHttpClient.Builder()
+            .addInterceptor(loggingInterceptor)
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .build()
+    }
 
-        fun getCatalogService(): ApiServiceCatalog {
-            val loggingInterceptor =
-                HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
-            val retrofit = Retrofit.Builder().baseUrl(BASE_URL_PRODUCT)
-                .addConverterFactory(GsonConverterFactory.create()).client(client).build()
-            return retrofit.create(ApiServiceCatalog::class.java)
-        }
+    private val retrofitAuth: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL_AUTH)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
+
+    private val retrofitPredict: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL_PREDICT)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
+
+    fun getAuthService(): ApiServiceAuth {
+        return retrofitAuth.create(ApiServiceAuth::class.java)
+    }
+
+    fun getPredictService(): ApiServicePredict {
+        return retrofitPredict.create(ApiServicePredict::class.java)
+    }
+
+    fun getCatalogService(): ApiServiceCatalog {
+        return retrofitPredict.create(ApiServiceCatalog::class.java)
+    }
+
+    fun getProductService(): ApiServiceProduct {
+        return retrofitPredict.create(ApiServiceProduct::class.java)
     }
 }

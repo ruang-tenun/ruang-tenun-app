@@ -149,7 +149,7 @@
         motion:constraintSetStart="@+id/start" />
     <Transition
         motion:constraintSetEnd="@+id/menu2"
-        motion:constraintSetStart="@+id/end">
+        motion:constraintSetStart="@+id/end" motion:duration="400">
         <OnClick motion:targetId="@id/tv_next" />
         <OnSwipe motion:dragDirection="dragLeft" />
     </Transition>

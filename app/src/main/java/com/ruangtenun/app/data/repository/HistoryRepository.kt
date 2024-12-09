@@ -1,22 +1,23 @@
 package com.ruangtenun.app.data.repository
 
-import android.content.Context
-import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.ruangtenun.app.data.local.database.ClassificationHistoryDao
 import com.ruangtenun.app.data.model.ClassificationHistory
 import com.ruangtenun.app.utils.ResultState
-import java.io.File
-import java.io.FileOutputStream
 
 class HistoryRepository(
     private val historyDao: ClassificationHistoryDao,
 ) {
 
-    suspend fun insertClassificationHistory(classificationHistory: ClassificationHistory) {
-        historyDao.insertClassificationHistory(classificationHistory)
+    suspend fun insertClassificationHistory(classificationHistory: ClassificationHistory): ResultState<String> {
+        return try {
+            historyDao.insertClassificationHistory(classificationHistory)
+            ResultState.Success("Data berhasil disimpan")
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ResultState.Error("Gagal menyimpan data")
+        }
     }
 
     suspend fun deleteClassificationHistory(classification: ClassificationHistory) {
@@ -30,7 +31,6 @@ class HistoryRepository(
                 val data = historyDao.getAllClassificationHistory()
                 if (data.isEmpty()) {
                     emit(ResultState.Error("No data found"))
-                    Log.d("HistoryRepository", "No data found")
                 } else {
                     emit(ResultState.Success(data))
                 }
