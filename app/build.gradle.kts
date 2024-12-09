@@ -1,6 +1,9 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-parcelize")
 }
 
 android {
@@ -16,8 +19,29 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"https://auth-api-942725723628.asia-southeast2.run.app/\"")
-        buildConfigField("String", "CLIENT_ID", "\"942725723628-k0g18dsk9lcf3n58ajcmpepfao9duqii.apps.googleusercontent.com\"")
+        val p = Properties()
+        p.load(project.rootProject.file("local.properties").reader())
+
+        val baseUrlAuth: String = p.getProperty("BASE_URL_AUTH")
+        buildConfigField(
+            "String",
+            "BASE_URL_AUTH",
+            "\"$baseUrlAuth\""
+        )
+
+        val webClientId: String = p.getProperty("WEB_CLIENT_ID")
+        buildConfigField(
+            "String",
+            "WEB_CLIENT_ID",
+            "\"$webClientId\""
+        )
+
+        val baseUrlPredict: String = p.getProperty("BASE_URL_PREDICT")
+        buildConfigField(
+            "String",
+            "BASE_URL_PREDICT",
+            "\"$baseUrlPredict\""
+        )
     }
 
     buildTypes {
@@ -51,6 +75,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.exifinterface)
     implementation(libs.androidx.swiperefreshlayout)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -71,10 +97,10 @@ dependencies {
     implementation(libs.logging.interceptor)
 
     // google credentials
-    implementation (libs.androidx.credentials)
-    implementation (libs.androidx.credentials.play.services.auth)
-    implementation (libs.googleid)
-    implementation (libs.play.services.auth)
+    implementation(libs.androidx.credentials)
+    implementation(libs.androidx.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.play.services.auth)
 
     // camera
     implementation(libs.androidx.camera.camera2)

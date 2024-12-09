@@ -3,7 +3,7 @@ package com.ruangtenun.app.view.authentication
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.ruangtenun.app.data.UserRepository
+import com.ruangtenun.app.data.repository.UserRepository
 import com.ruangtenun.app.di.Injection
 
 class AuthViewModelFactory(private val userRepository: UserRepository) : ViewModelProvider.NewInstanceFactory() {
@@ -24,7 +24,7 @@ class AuthViewModelFactory(private val userRepository: UserRepository) : ViewMod
         fun getInstance(context: Context): AuthViewModelFactory {
             if (INSTANCE == null) {
                 synchronized(AuthViewModelFactory::class.java) {
-                    INSTANCE = AuthViewModelFactory(Injection.provideRepository(context))
+                    INSTANCE = AuthViewModelFactory(Injection.provideUserRepository(context))
                 }
             }
             return INSTANCE as AuthViewModelFactory

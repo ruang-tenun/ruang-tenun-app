@@ -63,16 +63,16 @@
     <style name="BaseTextView" parent="TextAppearance.Material3.BodyMedium">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">16dp</item>
-        <item name="android:layout_marginStart">16dp</item>
-        <item name="android:layout_marginEnd">16dp</item>
+        <item name="android:layout_marginTop">@dimen/margin_medium</item>
+        <item name="android:layout_marginStart">@dimen/margin_medium</item>
+        <item name="android:layout_marginEnd">@dimen/margin_medium</item>
         <item name="android:textColor">@color/primary</item>
     </style>
 
     <style name="BaseInputText">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">16dp</item>
+        <item name="android:padding">@dimen/padding_medium</item>
         <item name="android:ems">10</item>
         <item name="android:textStyle">bold</item>
     </style>
@@ -91,17 +91,17 @@
     <style name="BaseButton" parent="Widget.Material3.Button">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">16dp</item>
+        <item name="android:padding">@dimen/padding_medium</item>
         <item name="cornerRadius">10dp</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:textSize">@dimen/text_size_medium</item>
+        <item name="android:layout_marginTop">@dimen/margin_medium</item>
     </style>
 
     <style name="BaseOutlinedButton" parent="Widget.Material3.Button.OutlinedButton.Icon">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">8dp</item>
-        <item name="android:padding">16dp</item>
+        <item name="android:layout_marginTop">@dimen/margin_small</item>
+        <item name="android:padding">@dimen/padding_medium</item>
         <item name="cornerRadius">10dp</item>
         <item name="strokeColor">@color/onSecondary</item>
         <item name="iconTint">@null</item>
@@ -111,7 +111,7 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:layout_margin">16dp</item>
+        <item name="android:layout_margin">@dimen/margin_medium</item>
         <item name="fontFamily">@font/inter</item>
         <item name="fontWeight">700</item>
     </style>

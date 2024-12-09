@@ -6,23 +6,35 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.ruangtenun.app.utils.ToastUtils.showToast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.ruangtenun.app.R
+import com.ruangtenun.app.data.ResultState
+import com.ruangtenun.app.data.api.response.PredictResponse
 import com.ruangtenun.app.databinding.FragmentSearchBinding
+import com.ruangtenun.app.utils.DialogUtils.showDialog
+import com.ruangtenun.app.utils.ToastUtils.showToast
+import com.ruangtenun.app.utils.reduceFileImage
+import com.ruangtenun.app.utils.uriToFile
+import com.ruangtenun.app.view.main.MainVIewModelFactory
 import com.ruangtenun.app.view.main.camera.CameraActivity
 import com.ruangtenun.app.view.main.camera.CameraActivity.Companion.CAMERAX_RESULT
+import com.ruangtenun.app.view.main.result.ResultFragment
 import com.yalantis.ucrop.UCrop
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import kotlin.getValue
 
 class SearchFragment : Fragment() {
 
@@ -113,6 +125,10 @@ class SearchFragment : Fragment() {
         binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
+        val searchViewModel: SearchViewModel by viewModels {
+            MainVIewModelFactory.Companion.getInstance()
+        }
+
         if (!allPermissionsGranted()) {
             requestPermissionLauncher.launch(CAMERA_PERMISSION)
         }
@@ -120,11 +136,14 @@ class SearchFragment : Fragment() {
         binding.apply {
             btnUploadImage.setOnClickListener { startGallery() }
             btnCamera.setOnClickListener { startCameraX() }
+            btnAnalyze.setOnClickListener { scanImage(searchViewModel) }
         }
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
+
+        observeView(searchViewModel, currentImageUri)
 
         return binding.root
     }
@@ -142,6 +161,58 @@ class SearchFragment : Fragment() {
         currentImageUri?.let {
             binding.previewImage.setImageURI(it)
         }
+    }
+
+    private fun observeView(searchViewModel: SearchViewModel, imageUri: Uri? = null) {
+        searchViewModel.predictResult.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResultState.Error -> {
+                    showLoading(false)
+                    showDialog(
+                        requireContext(),
+                        "gagal memprediksi",
+                        result.error,
+                        getString(R.string.ok)
+                    )
+                }
+                is ResultState.Loading -> showLoading(true)
+                is ResultState.Success -> {
+                    showLoading(false)
+                    moveToResult(result.data, currentImageUri)
+                }
+            }
+        }
+    }
+
+    private fun scanImage(searchViewModel: SearchViewModel) {
+        currentImageUri?.let { uri ->
+            val imageFile = uriToFile(uri, requireContext()).reduceFileImage()
+
+            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
+                "image",
+                imageFile.name,
+                requestImageFile
+            )
+
+            searchViewModel.predict(multipartBody)
+        }
+    }
+
+    private fun moveToResult(predictResponse: PredictResponse, imageUri: Uri? = null) {
+
+        val resultFragment = ResultFragment().apply {
+            arguments = Bundle().apply {
+                putParcelable(ResultFragment.PREDICT_RESULT, predictResponse)
+                putParcelable(ResultFragment.PREDICT_IMAGE, imageUri)
+            }
+        }
+
+        findNavController().navigate(R.id.navigation_result, resultFragment.arguments)
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.loading.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     companion object {

@@ -11,6 +11,7 @@ import com.ruangtenun.app.databinding.ActivitySplashScreenBinding
 import com.ruangtenun.app.view.authentication.AuthActivity
 import com.ruangtenun.app.view.authentication.AuthViewModel
 import com.ruangtenun.app.view.authentication.AuthViewModelFactory
+import com.ruangtenun.app.view.main.MainActivity
 import com.ruangtenun.app.view.onboarding.OnboardingActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -51,11 +52,13 @@ class SplashScreenActivity : AppCompatActivity() {
                     navigateToOnboardingActivity()
                 }
 
-                user?.isLogin == true -> navigateToAuthActivity()
+                user?.isLogin == true -> navigateToMainActivity()
+
                 else -> navigateToAuthActivity()
             }
         }
     }
+
 
     private fun navigateToAuthActivity() {
         val intent = Intent(this, AuthActivity::class.java)
@@ -65,6 +68,12 @@ class SplashScreenActivity : AppCompatActivity() {
 
     private fun navigateToOnboardingActivity() {
         val intent = Intent(this, OnboardingActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
+
+    private fun navigateToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }

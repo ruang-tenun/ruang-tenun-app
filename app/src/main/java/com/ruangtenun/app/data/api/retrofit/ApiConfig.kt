@@ -8,26 +8,42 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object ApiConfig {
 
-    private const val BASE_URL = BuildConfig.BASE_URL
+    private const val BASE_URL_AUTH = BuildConfig.BASE_URL_AUTH
+    private const val BASE_URL_PREDICT = BuildConfig.BASE_URL_PREDICT
 
-    fun getApiService() : ApiService {
+    private val client: OkHttpClient by lazy {
         val loggingInterceptor = if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         } else {
             HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
         }
 
-        val client = OkHttpClient.Builder()
+        OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
             .build()
+    }
 
-        val retrofit = Retrofit.Builder()
-            .baseUrl(BASE_URL)
+    private val retrofitAuth: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL_AUTH)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
-
-        return retrofit.create(ApiService::class.java)
     }
 
+    private val retrofitPredict: Retrofit by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL_PREDICT)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
+
+    fun getAuthService(): ApiServiceAuth {
+        return retrofitAuth.create(ApiServiceAuth::class.java)
+    }
+
+    fun getPredictService(): ApiServicePredict {
+        return retrofitPredict.create(ApiServicePredict::class.java)
+    }
 }

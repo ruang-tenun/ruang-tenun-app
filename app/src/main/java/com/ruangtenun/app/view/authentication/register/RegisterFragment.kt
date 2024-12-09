@@ -1,17 +1,16 @@
 package com.ruangtenun.app.view.authentication.register
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ruangtenun.app.R
 import com.ruangtenun.app.data.ResultState
 import com.ruangtenun.app.view.authentication.login.LoginFragment
 import com.ruangtenun.app.databinding.FragmentRegisterBinding
+import com.ruangtenun.app.utils.DialogUtils.showDialog
 import com.ruangtenun.app.view.authentication.AuthViewModel
 import com.ruangtenun.app.view.authentication.AuthViewModelFactory
 
@@ -56,10 +55,10 @@ class RegisterFragment : Fragment() {
                     showLoading(false)
                     showDialog(
                         requireContext(),
-                        "Register berhasil",
+                        getString(R.string.registration_successful),
                         result.data.message.toString(),
-                        "Lanjut",
-                        true
+                        getString(R.string.next),
+                        onPositiveClick = { moveToLogin() }
                     )
                 }
 
@@ -67,10 +66,9 @@ class RegisterFragment : Fragment() {
                     showLoading(false)
                     showDialog(
                         requireContext(),
-                        "Register gagal",
-                        "Registrasi gagal: ${result.error}",
-                        "Coba Lagi",
-                        false
+                        getString(R.string.register_failed),
+                        getString(R.string.registration_failed_with_error, result.error),
+                        getString(R.string.try_again)
                     )
                 }
 
@@ -98,26 +96,6 @@ class RegisterFragment : Fragment() {
                 LoginFragment::class.java.simpleName
             )
             .commit()
-    }
-
-    private fun showDialog(
-        context: Context,
-        title: String,
-        message: String,
-        setOnClick: String,
-        moveToLogin: Boolean = false
-    ) {
-        MaterialAlertDialogBuilder(context)
-            .setTitle(title)
-            .setMessage(message)
-            .setPositiveButton(setOnClick) { dialog, which ->
-                if (moveToLogin) {
-                    moveToLogin()
-                } else {
-                    dialog.dismiss()
-                }
-            }
-            .show()
     }
 
     private fun showLoading(isLoading: Boolean) {

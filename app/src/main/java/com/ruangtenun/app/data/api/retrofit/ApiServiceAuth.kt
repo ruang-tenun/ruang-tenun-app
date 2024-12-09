@@ -6,7 +6,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
 
-interface ApiService {
+interface ApiServiceAuth {
 
     @FormUrlEncoded
     @POST("api/register")
@@ -22,4 +22,5 @@ interface ApiService {
         @Field("email") email: String,
         @Field("password") password: String
     ) : LoginResponse
+
 }

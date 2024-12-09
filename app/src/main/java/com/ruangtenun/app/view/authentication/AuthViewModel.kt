@@ -1,12 +1,13 @@
 package com.ruangtenun.app.view.authentication
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.ruangtenun.app.data.ResultState
-import com.ruangtenun.app.data.UserRepository
+import com.ruangtenun.app.data.repository.UserRepository
 import com.ruangtenun.app.data.api.response.LoginResponse
 import com.ruangtenun.app.data.api.response.RegisterResponse
 import com.ruangtenun.app.data.pref.UserModel
@@ -45,6 +46,7 @@ class AuthViewModel(private val userRepository: UserRepository) : ViewModel() {
                     UserModel(name = name, email = email, token = token, isLogin = true)
                 saveSession(userModel)
                 loginResult.value = ResultState.Success(response)
+                Log.d("LoginViewModel", "Login success: $response")
             } catch (e: Exception) {
                 val errorMessage =
                     (e as? HttpException)?.response()?.errorBody()?.string() ?: e.localizedMessage
@@ -56,6 +58,7 @@ class AuthViewModel(private val userRepository: UserRepository) : ViewModel() {
     fun saveSession(user: UserModel) {
         viewModelScope.launch {
             userRepository.saveSession(user)
+            Log.d("AuthViewModel", "Session saved: $user")
         }
     }
 
