@@ -38,6 +38,19 @@ android {
             "WEB_CLIENT_ID",
             "\"$webClientId\""
         )
+
+        val baseUrlPredict: String = p.getProperty("BASE_URL_PREDICT")
+        buildConfigField(
+            "String",
+            "BASE_URL_PREDICT",
+            "\"$baseUrlPredict\""
+        )
+        val baseUrlProduct: String = p.getProperty("BASE_URL_PRODUCT")
+        buildConfigField(
+            "String",
+            "BASE_URL_PRODUCT",
+            "\"$baseUrlProduct\""
+        )
     }
 
     buildTypes {
@@ -77,6 +90,7 @@ dependencies {
 
     // coroutine
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.core)
 
     // splashscreen
     implementation(libs.androidx.core.splashscreen)
@@ -120,4 +134,11 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     ksp(libs.room.compiler)
     implementation(libs.androidx.room.ktx)
+
+    // viewmodel
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // glide
+    implementation(libs.glide)
 }

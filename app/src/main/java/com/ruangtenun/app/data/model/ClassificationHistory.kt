@@ -12,7 +12,13 @@ import java.util.UUID
 data class ClassificationHistory(
     @PrimaryKey
     @ColumnInfo(name = "classification_id")
-    var classificationId: String = UUID.randomUUID().toString(),
+    var id: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "weaving_name")
     var weavingName: String? = null,
+    @ColumnInfo(name = "confidence_score")
+    var confidenceScore: Double? = null,
+    @ColumnInfo(name = "image_url")
+    var imageUrl: String? = null,
+    @ColumnInfo(name = "created_at")
+    var createdAt: String? = null
 ) : Parcelable

@@ -1,4 +1,9 @@
 package com.ruangtenun.app.viewmodel.main
 
-class MainViewModel {
+import com.ruangtenun.app.data.repository.ProductRepository
+
+class MainViewModel(
+    private val productRepository: ProductRepository
+) {
+
 }

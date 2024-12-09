@@ -87,4 +87,8 @@
     <string name="product_image">Product Image</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="empty_image_warning">Please Add An Image</string>
+    <string name="product_photo">Preview Photo Of Product</string>
+    <string name="categories_option">Choose Categories</string>
+    <string name="image_save_failed">Failed Save Image</string>
 </resources>
