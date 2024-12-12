@@ -5,37 +5,27 @@ import androidx.lifecycle.liveData
 import com.google.gson.Gson
 import com.ruangtenun.app.data.remote.api.ApiServiceProduct
 import com.ruangtenun.app.data.remote.response.AddProductResponse
-import com.ruangtenun.app.data.remote.response.ListProductResponse
 import com.ruangtenun.app.data.remote.response.ProductResponse
 import com.ruangtenun.app.utils.ResultState
-import kotlinx.coroutines.flow.Flow
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 import retrofit2.Response
-import java.io.File
 
 class ProductRepository(
     private val apiServiceProduct: ApiServiceProduct,
 ) {
     fun addProduct(
         token: String,
-        imageFile: File,
-        lat: Double?,
-        lon: Double?
+        image: MultipartBody.Part,
+        name: String,
+        ecommerceUrl: String,
+        lat: Double,
+        lon: Double
     ): LiveData<ResultState<Response<AddProductResponse>>> = liveData {
         emit(ResultState.Loading)
-        val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
-        val multipartBody = MultipartBody.Part.createFormData(
-            "photo",
-            imageFile.name,
-            requestImageFile
-        )
         try {
             val successResponse =
-                apiServiceProduct.addProduct(token, multipartBody, lat, lon)
+                apiServiceProduct.addProduct(token, image, name, ecommerceUrl, lat, lon)
             emit(ResultState.Success(successResponse))
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
@@ -46,14 +36,14 @@ class ProductRepository(
 
     fun getAllProduct(
         token: String,
-    ): LiveData<ResultState<Response<ListProductResponse>>> = liveData {
+    ): LiveData<ResultState<Response<ProductResponse>>> = liveData {
         emit(ResultState.Loading)
         try {
             val successResponse = apiServiceProduct.getAllProduct(token)
             emit(ResultState.Success(successResponse))
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
-            val errorResponse = Gson().fromJson(errorBody, ListProductResponse::class.java)
+            val errorResponse = Gson().fromJson(errorBody, ProductResponse::class.java)
             emit(ResultState.Error(errorResponse.message ?: "Unknown error"))
         }
     }

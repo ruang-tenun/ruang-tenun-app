@@ -22,5 +22,4 @@ interface ApiServiceAuth {
         @Field("email") email: String,
         @Field("password") password: String
     ) : LoginResponse
-
 }

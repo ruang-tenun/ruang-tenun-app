@@ -112,4 +112,6 @@
     <string name="save_image">Save Prediction To History</string>
     <string name="are_you_sure_want_to_save">Are You Sure want to save?</string>
     <string name="failed_to_save_image">Failed To Save Image</string>
+    <string name="ecommerce">Ecommerce</string>
+    <string name="address">Address</string>
 </resources>

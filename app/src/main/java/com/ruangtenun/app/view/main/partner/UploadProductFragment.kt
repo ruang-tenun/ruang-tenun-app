@@ -7,31 +7,51 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.ruangtenun.app.R
 import com.ruangtenun.app.databinding.FragmentUploadProductBinding
 import com.ruangtenun.app.utils.ToastUtils.showToast
+import com.ruangtenun.app.utils.ViewModelFactory
+import com.ruangtenun.app.utils.reduceFileImage
+import com.ruangtenun.app.utils.uriToFile
 import com.ruangtenun.app.view.main.camera.CameraActivity
 import com.ruangtenun.app.view.main.camera.CameraActivity.Companion.CAMERAX_RESULT
 import com.ruangtenun.app.view.main.maps.MapsActivity
+import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
+import com.ruangtenun.app.viewmodel.product.ProductViewModel
 import com.yalantis.ucrop.UCrop
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.util.Locale
+import kotlin.getValue
 
 class UploadProductFragment : Fragment() {
 
     private lateinit var binding: FragmentUploadProductBinding
     private var currentImageUri: Uri? = null
+
+    private var latitude: Double? = null
+    private var longitude: Double? = null
+
+    private val authViewModel: AuthViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
+
+    private val productViewModel: ProductViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
 
     private val cropResultLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -142,6 +162,7 @@ class UploadProductFragment : Fragment() {
             btnNavigateToMap.setOnClickListener {
                 navigateToMapsActivity()
             }
+            btnUpload.setOnClickListener { addProduct() }
         }
 
         binding.toolbar.setNavigationOnClickListener {
@@ -166,12 +187,60 @@ class UploadProductFragment : Fragment() {
         }
     }
 
+    private fun addProduct() {
+
+        binding.tfProductName.text?.isBlank() ?: showToast(
+            requireContext(),
+            "Product name cannot be empty"
+        )
+        binding.tfLinkProduct.text?.isBlank() ?: showToast(
+            requireContext(),
+            "E-commerce URL cannot be empty"
+        )
+
+        if (latitude == null || longitude == null) {
+            showToast(requireContext(), "Please select a valid location")
+            return
+        }
+
+        currentImageUri?.let { uri ->
+
+            val token = authViewModel.getSession().value?.token ?: ""
+
+            val imageFile = uriToFile(uri, requireContext()).reduceFileImage()
+
+            val requestImageFile = imageFile.asRequestBody("image/jpeg".toMediaType())
+            val multipartBody = MultipartBody.Part.createFormData(
+                "image",
+                imageFile.name,
+                requestImageFile
+            )
+
+            val name =
+                binding.tfProductName.text.toString()
+            val ecommerceUrl =
+                binding.tfLinkProduct.text.toString()
+
+            if (latitude == null || longitude == null) {
+                showToast(requireContext(), getString(R.string.location_error))
+                return
+            }
+
+            productViewModel.addProduct(
+                token, multipartBody, name, ecommerceUrl, latitude!!, longitude!!
+            )
+            showToast(requireContext(), "Success add product")
+        } ?: showToast(requireContext(), getString(R.string.no_image_selected))
+    }
+
     private fun navigateToMapsActivity() {
         val intent = Intent(requireContext(), MapsActivity::class.java)
         mapsResultLauncher.launch(intent)
     }
 
     private fun showAddress(longitude: Double, latitude: Double) {
+        this.latitude = latitude
+        this.longitude = longitude
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
         val address = geocoder.getFromLocation(latitude, longitude, 1)
         if (!address.isNullOrEmpty()) {

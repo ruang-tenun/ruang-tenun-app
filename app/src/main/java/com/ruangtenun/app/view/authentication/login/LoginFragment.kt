@@ -40,8 +40,7 @@ class LoginFragment : Fragment() {
             }
 
             loginButton.setOnClickListener {
-//                loginAction(authViewModel)
-                moveToMain()
+                loginAction(authViewModel)
             }
 
             googleLogin.setOnClickListener {

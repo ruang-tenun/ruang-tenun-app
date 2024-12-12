@@ -62,7 +62,4 @@ data class CatalogResponse(
 
     @field:SerializedName("message")
     val message: String? = null,
-
-    @field:SerializedName("story")
-    val product: Product? = null
 )

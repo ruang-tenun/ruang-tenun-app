@@ -44,7 +44,7 @@ android {
             "BASE_URL_PREDICT",
             "\"$baseUrlPredict\""
         )
-        val baseUrlProduct: String = p.getProperty("BASE_URL_PRODUCT")
+        val baseUrlProduct: String = p.getProperty("BASE_URL_AUTH")
         buildConfigField(
             "String",
             "BASE_URL_PRODUCT",

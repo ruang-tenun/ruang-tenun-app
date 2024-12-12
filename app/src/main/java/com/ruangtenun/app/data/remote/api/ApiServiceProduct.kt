@@ -1,10 +1,8 @@
 package com.ruangtenun.app.data.remote.api
 
 import com.ruangtenun.app.data.remote.response.AddProductResponse
-import com.ruangtenun.app.data.remote.response.ListProductResponse
 import com.ruangtenun.app.data.remote.response.ProductResponse
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -19,15 +17,17 @@ interface ApiServiceProduct {
     @POST("product")
     suspend fun addProduct(
         @Header("Authorization") token: String,
-        @Part photo: MultipartBody.Part,
-        @Part("lat") lat: Double?,
-        @Part("lon") lon: Double?
+        @Part image: MultipartBody.Part,
+        @Part("name") name: String,
+        @Part("ecommerce_url") ecommerceUrl: String,
+        @Part("latitude") latitude: Double,
+        @Part("longitude") longitude: Double
     ): Response<AddProductResponse>
 
     @GET("product")
     suspend fun getAllProduct(
         @Header("Authorization") token: String,
-    ): Response<ListProductResponse>
+    ): Response<ProductResponse>
 
     @GET("product/{id}")
     suspend fun getProductById(
