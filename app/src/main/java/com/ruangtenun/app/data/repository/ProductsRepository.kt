@@ -3,27 +3,28 @@ package com.ruangtenun.app.data.repository
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.google.gson.Gson
-import com.ruangtenun.app.data.remote.api.ApiServiceCatalog
-import com.ruangtenun.app.data.remote.response.CatalogDetail
-import com.ruangtenun.app.data.remote.response.CatalogDetailResponse
-import com.ruangtenun.app.data.remote.response.CatalogItem
-import com.ruangtenun.app.data.remote.response.CatalogResponse
+import com.ruangtenun.app.data.remote.api.ApiServiceProduct
 import com.ruangtenun.app.data.remote.response.ProductDetail
 import com.ruangtenun.app.data.remote.response.ProductDetailResponse
 import com.ruangtenun.app.data.remote.response.ProductsItem
 import com.ruangtenun.app.data.remote.response.ProductsResponse
 import com.ruangtenun.app.utils.ResultState
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
 import retrofit2.Response
+import java.io.File
 
-class CatalogRepository(
-    private val apiServiceCatalog: ApiServiceCatalog,
+class ProductsRepository(
+    private val apiServiceProduct: ApiServiceProduct,
 ) {
-    suspend fun getAllCatalog(token: String): ResultState<List<CatalogItem>> {
+
+    suspend fun getAllProduct(token: String): ResultState<List<ProductsItem>> {
         return try {
-            val response = apiServiceCatalog.getAllCatalog("Bearer $token")
+            val response = apiServiceProduct.getAllProduct("Bearer $token")
             if (response.isSuccessful) {
-                ResultState.Success(response.body()?.catalogItem.orEmpty())
+                ResultState.Success(response.body()?.productsItem.orEmpty())
             } else {
                 val errorBody = response.errorBody()?.string()
                 val errorResponse = Gson().fromJson(errorBody, ProductsResponse::class.java)
@@ -36,23 +37,23 @@ class CatalogRepository(
         }
     }
 
-    suspend fun getCatalogById(
+    suspend fun getProductById(
         id: Int,
         token: String,
-    ): ResultState<CatalogDetail> {
+    ): ResultState<ProductDetail> {
         return try {
-            val response = apiServiceCatalog.getCatalogById(id, "Bearer $token")
+            val response = apiServiceProduct.getProductById(id, "Bearer $token")
             if (response.isSuccessful) {
-                val catalogList = response.body()?.catalogDetail
-                val detailCatalog = catalogList?.firstOrNull()
-                if (detailCatalog != null) {
-                    ResultState.Success(detailCatalog)
+                val productList = response.body()?.detailProduct
+                val detailProduct = productList?.firstOrNull()
+                if (detailProduct != null) {
+                    ResultState.Success(detailProduct)
                 } else {
-                    ResultState.Error("Catalog not found")
+                    ResultState.Error("Product not found")
                 }
             } else {
                 val errorBody = response.errorBody()?.string()
-                val errorResponse = Gson().fromJson(errorBody, CatalogDetailResponse::class.java)
+                val errorResponse = Gson().fromJson(errorBody, ProductDetailResponse::class.java)
                 ResultState.Error(errorResponse.message ?: "Unknown error")
             }
         } catch (e: HttpException) {
@@ -64,13 +65,14 @@ class CatalogRepository(
 
     companion object {
         @Volatile
-        private var instance: CatalogRepository? = null
+        private var instance: ProductsRepository? = null
         fun getInstance(
-            apiServiceCatalog: ApiServiceCatalog,
-        ): CatalogRepository =
+            apiServiceProduct: ApiServiceProduct,
+        ): ProductsRepository =
             instance ?: synchronized(this) {
-                instance ?: CatalogRepository(apiServiceCatalog)
+                instance ?: ProductsRepository(apiServiceProduct)
             }
                 .also { instance = it }
     }
+
 }

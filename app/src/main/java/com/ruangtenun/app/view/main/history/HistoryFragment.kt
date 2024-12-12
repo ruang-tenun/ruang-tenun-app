@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.ruangtenun.app.R
 import com.ruangtenun.app.data.model.ClassificationHistory
 import com.ruangtenun.app.databinding.FragmentHistoryBinding
@@ -37,13 +38,11 @@ class HistoryFragment : Fragment() {
     ): View {
         _binding = FragmentHistoryBinding.inflate(inflater, container, false)
 
-        // Setup toolbar
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
         binding.toolbar.setNavigationOnClickListener {
             findNavController().popBackStack()
         }
 
-        // Initialize RecyclerView and ViewModel Observers
         setupRecyclerView()
         observeViewModel()
 
@@ -57,30 +56,50 @@ class HistoryFragment : Fragment() {
             val itemDecoration = DividerItemDecoration(requireContext(), verticalLayout.orientation)
             rvHistory.addItemDecoration(itemDecoration)
 
-            adapterHistory = AdapterHistory { historyId ->
-                val bundle = Bundle().apply {
-                    historyId?.let { putString("historyId", historyId) }
+            adapterHistory = AdapterHistory(
+                onItemClick = { historyId ->
+                    val bundle = Bundle().apply {
+                        historyId?.let { putString("historyId", historyId) }
+                    }
+                    findNavController().navigate(R.id.navigation_detail, bundle)
+                },
+                onDeleteClick = { historyId ->
+                    historyId?.let { id ->
+                        MaterialAlertDialogBuilder(requireContext())
+                            .setTitle(resources.getString(R.string.delete_history))
+                            .setMessage(resources.getString(R.string.supporting_text))
+                            .setNegativeButton(resources.getString(R.string.cancel)) { dialog, _ ->
+                                dialog.dismiss()
+                            }
+                            .setPositiveButton(resources.getString(R.string.ok)) { _, _ ->
+                                val historyToDelete = ClassificationHistory(id = id)
+                                historyViewModel.deleteHistory(historyToDelete)
+                            }
+                            .show()
+                    }
                 }
-                findNavController().navigate(R.id.navigation_detail, bundle)
-            }
+            )
+
             rvHistory.adapter = adapterHistory
         }
     }
 
     private fun observeViewModel() {
-        historyViewModel.allHistoryState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is ResultState.Loading -> {
-                    showLoading(true)
-                }
-                is ResultState.Success -> {
-                    showLoading(false)
-                    setHistory(state.data)
-                }
-                is ResultState.Error -> {
-                    showLoading(false)
-                    showError(state.error)
-                }
+        historyViewModel.allHistories.observe(viewLifecycleOwner) { data ->
+            setHistory(data)
+        }
+
+        historyViewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                showLoading(true)
+            } else {
+                showLoading(false)
+            }
+        }
+
+        historyViewModel.message.observe(viewLifecycleOwner) { message ->
+            if (message.isNotEmpty()) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
     }

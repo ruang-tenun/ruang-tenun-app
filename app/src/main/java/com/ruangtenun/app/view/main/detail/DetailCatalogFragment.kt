@@ -8,20 +8,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.ruangtenun.app.R
 import com.ruangtenun.app.databinding.FragmentDetailBinding
+import com.ruangtenun.app.databinding.FragmentDetailCatalogBinding
 import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
 import com.ruangtenun.app.viewmodel.main.MainViewModel
 
-class DetailFragment : Fragment() {
+class DetailCatalogFragment : Fragment() {
 
-    private var _binding: FragmentDetailBinding? = null
+    private var _binding: FragmentDetailCatalogBinding? = null
     private val binding get() = _binding!!
 
     private var productId: Int? = null
@@ -37,13 +36,7 @@ class DetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentDetailBinding.inflate(inflater, container, false)
-
-        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
-
-        binding.toolbar.setNavigationOnClickListener {
-            findNavController().popBackStack()
-        }
+        _binding = FragmentDetailCatalogBinding.inflate(layoutInflater, container, false)
 
         productId = arguments?.getInt("productId")
 
@@ -84,16 +77,11 @@ class DetailFragment : Fragment() {
             }
         }
 
-        return _binding!!.root
+        return binding.root
     }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 
 }

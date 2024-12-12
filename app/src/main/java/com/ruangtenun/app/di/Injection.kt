@@ -9,19 +9,19 @@ import com.ruangtenun.app.data.local.pref.UserPreference
 import com.ruangtenun.app.data.local.pref.dataStore
 import com.ruangtenun.app.data.remote.api.ApiConfig
 import com.ruangtenun.app.data.repository.CatalogRepository
-import com.ruangtenun.app.data.repository.ProductRepository
+import com.ruangtenun.app.data.repository.ProductsRepository
 import com.ruangtenun.app.data.repository.HistoryRepository
 
 object Injection {
     fun provideHistoryRepository(application: Application): HistoryRepository {
         val database = WeavenFabricDatabase.getDatabase(application)
         val dao = database.classificationHistoryDao()
-        return HistoryRepository.getInstance(dao)
+        return HistoryRepository.getInstance(dao, application)
     }
 
-    fun provideProductRepository(): ProductRepository {
+    fun provideProductRepository(): ProductsRepository {
         val apiServiceProduct = ApiConfig.getProductService()
-        return ProductRepository.getInstance(apiServiceProduct)
+        return ProductsRepository.getInstance(apiServiceProduct)
     }
 
     fun provideAuthRepository(context: Context): AuthRepository {

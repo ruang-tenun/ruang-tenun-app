@@ -51,6 +51,8 @@ class RegisterFragment : Fragment() {
     private fun observeView(authViewModel: AuthViewModel) {
         authViewModel.registerResult.observe(viewLifecycleOwner) { result ->
             when (result) {
+                is ResultState.Idle -> {
+                }
                 is ResultState.Success -> {
                     showLoading(false)
                     showDialog(

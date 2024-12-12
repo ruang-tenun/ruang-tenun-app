@@ -1,42 +1,37 @@
 package com.ruangtenun.app.utils
 
 import android.app.Application
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.ruangtenun.app.data.repository.AuthRepository
 import com.ruangtenun.app.data.repository.CatalogRepository
 import com.ruangtenun.app.data.repository.HistoryRepository
 import com.ruangtenun.app.data.repository.PredictRepository
-import com.ruangtenun.app.data.repository.ProductRepository
+import com.ruangtenun.app.data.repository.ProductsRepository
 import com.ruangtenun.app.di.Injection
 import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
 import com.ruangtenun.app.viewmodel.history.HistoryViewModel
 import com.ruangtenun.app.viewmodel.main.MainViewModel
-import com.ruangtenun.app.viewmodel.product.ProductViewModel
 import com.ruangtenun.app.viewmodel.search.SearchViewModel
 
 class ViewModelFactory private constructor(
-    private val productRepository: ProductRepository,
+    private val productsRepository: ProductsRepository,
     private val historyRepository: HistoryRepository,
     private val catalogRepository: CatalogRepository,
     private val authRepository: AuthRepository,
-    private val predictRepository: PredictRepository
+    private val predictRepository: PredictRepository,
+    private val application: Application
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         return when {
             modelClass.isAssignableFrom(MainViewModel::class.java) -> {
-                MainViewModel(productRepository) as T
-            }
-
-            modelClass.isAssignableFrom(ProductViewModel::class.java) -> {
-                ProductViewModel(productRepository) as T
+                MainViewModel(productsRepository, catalogRepository) as T
             }
 
             modelClass.isAssignableFrom(HistoryViewModel::class.java) -> {
-                HistoryViewModel(historyRepository) as T
+                HistoryViewModel(historyRepository, application) as T
             }
 
             modelClass.isAssignableFrom(AuthViewModel::class.java) -> {
@@ -67,7 +62,8 @@ class ViewModelFactory private constructor(
                     historyRepository,
                     catalogRepository,
                     authRepository,
-                    predictRepository
+                    predictRepository,
+                    application
                 ).also { instance = it }
             }
 

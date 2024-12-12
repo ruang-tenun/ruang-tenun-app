@@ -23,13 +23,12 @@ android {
         val p = Properties()
         p.load(project.rootProject.file("local.properties").reader())
 
-        val baseUrlAuth: String = p.getProperty("BASE_URL_AUTH")
+        val baseUrl: String = p.getProperty("BASE_URL")
         buildConfigField(
             "String",
-            "BASE_URL_AUTH",
-            "\"$baseUrlAuth\""
+            "BASE_URL",
+            "\"$baseUrl\""
         )
-
 
         val webClientId: String = p.getProperty("WEB_CLIENT_ID")
         buildConfigField(
@@ -43,12 +42,6 @@ android {
             "String",
             "BASE_URL_PREDICT",
             "\"$baseUrlPredict\""
-        )
-        val baseUrlProduct: String = p.getProperty("BASE_URL_PRODUCT")
-        buildConfigField(
-            "String",
-            "BASE_URL_PRODUCT",
-            "\"$baseUrlProduct\""
         )
     }
 

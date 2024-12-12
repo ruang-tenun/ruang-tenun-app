@@ -3,6 +3,7 @@ package com.ruangtenun.app.view.main.home
 import android.Manifest
 import android.content.pm.PackageManager
 import android.location.Geocoder
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +12,19 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.ruangtenun.app.R
 import com.ruangtenun.app.data.local.pref.UserModel
+import com.ruangtenun.app.data.remote.response.ProductsItem
 import com.ruangtenun.app.databinding.FragmentHomeBinding
+import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
 import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
+import com.ruangtenun.app.viewmodel.main.AdapterProduct
+import com.ruangtenun.app.viewmodel.main.MainViewModel
 import java.util.Locale
 import kotlin.getValue
 
@@ -28,6 +34,16 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private val mainViewModel: MainViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
+    private val authViewModel: AuthViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
+
+    private var token: String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6InNhZWZ1bCIsImVtYWlsIjoic2FlZnVsQGdtYWlsLmNvbSIsImlhdCI6MTczNDAxNDkzMSwiZXhwIjoxNzM0MDE4NTMxfQ.OtWCCrSUGgUbTpUX0IgJEp6p_LfXORVNmPT1zROm6XE"
+
+    private lateinit var productAdapter: AdapterProduct
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -45,16 +61,33 @@ class HomeFragment : Fragment() {
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
 
-        val authViewModel: AuthViewModel by viewModels {
-            ViewModelFactory.getInstance(requireActivity().application)
-        }
-
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         checkLocationPermission()
 
         authViewModel.getSession().observe(viewLifecycleOwner) { user ->
             displayUserData(user)
         }
+
+        mainViewModel.fetchProducts(token)
+        setupRecyclerView()
+        mainViewModel.productState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ResultState.Idle -> {
+                }
+                is ResultState.Loading -> showLoading(true)
+                is ResultState.Success -> {
+                    showLoading(false)
+                    getCurrentLocation { currentLocation ->
+                        setProducts(state.data, currentLocation)
+                    }
+                }
+                is ResultState.Error -> {
+                    showLoading(false)
+                    showToast(requireContext(), state.error)
+                }
+            }
+        }
+
         return _binding!!.root
     }
 
@@ -64,20 +97,18 @@ class HomeFragment : Fragment() {
                 LOCATION_PERMISSION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
-            getCurrentLocation()
+            showToast(requireContext(), getString(R.string.permission_granted))
         } else {
             requestPermissionLauncher.launch(LOCATION_PERMISSION)
         }
     }
 
-    private fun getCurrentLocation() {
+    private fun getCurrentLocation(onLocationRetrieved: (Location) -> Unit) {
         try {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
-                    val latitude = location.latitude
-                    val longitude = location.longitude
-                    showToast(requireContext(), getString(R.string.location_acquired))
-                    getCityName(latitude, longitude)
+                    getCityName(location.latitude, location.longitude)
+                    onLocationRetrieved(location)
                 } else {
                     showToast(requireContext(), getString(R.string.location_failed))
                 }
@@ -107,10 +138,43 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun setupRecyclerView() {
+        productAdapter = AdapterProduct()
+        binding.rvNear.apply {
+            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = productAdapter
+        }
+    }
+
+    private fun setProducts(products: List<ProductsItem>, currentLocation: Location) {
+        val nearbyProducts = products.filter { product ->
+            product.latitude != null && product.longitude != null &&
+            calculateDistance(currentLocation.latitude, currentLocation.longitude, product.latitude, product.longitude) <= 10000
+        }
+
+        productAdapter.submitList(nearbyProducts)
+
+        if (nearbyProducts.isEmpty()) {
+            showToast(requireContext(), getString(R.string.no_products_nearby))
+        }
+    }
+
+    private fun calculateDistance(
+        lat1: Double, lon1: Double, lat2: Double, lon2: Double
+    ): Float {
+        val results = FloatArray(1)
+        Location.distanceBetween(lat1, lon1, lat2, lon2, results)
+        return results[0]
+    }
+
     private fun displayUserData(user: UserModel?) {
         if (user != null) {
             binding.tvUsername.text = getString(R.string.username, user.name)
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     companion object {

@@ -7,16 +7,16 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.ruangtenun.app.data.model.ClassificationHistory
-import com.ruangtenun.app.data.remote.response.Catalog
 import com.ruangtenun.app.databinding.CardCatalogBinding
 
-class AdapterHistory(private val onItemClick: ((String?) -> Unit)? = null) :
-    ListAdapter<ClassificationHistory, AdapterHistory.HistoryViewHolder>(DIFF_CALLBACK) {
+class AdapterHistory(
+    private val onItemClick: ((String?) -> Unit)? = null,
+    private val onDeleteClick: ((String?) -> Unit)? = null
+) : ListAdapter<ClassificationHistory, AdapterHistory.HistoryViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryViewHolder {
-        val binding =
-            CardCatalogBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return HistoryViewHolder(binding, onItemClick)
+        val binding = CardCatalogBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return HistoryViewHolder(binding, onItemClick, onDeleteClick)
     }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
@@ -25,18 +25,24 @@ class AdapterHistory(private val onItemClick: ((String?) -> Unit)? = null) :
 
     class HistoryViewHolder(
         private val binding: CardCatalogBinding,
-        private val onItemClick: ((String?) -> Unit)?
-    ) :
-        RecyclerView.ViewHolder(binding.root) {
+        private val onItemClick: ((String?) -> Unit)?,
+        private val onDeleteClick: ((String?) -> Unit)?
+    ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(history: ClassificationHistory) {
-            binding.catalogName.text = history.weavingName
-            binding.catalogArea.text = history.confidenceScore.toString()
-            Glide.with(binding.catalogPhoto.context)
-                .load(history.imageUrl)
-                .into(binding.catalogPhoto)
+            binding.apply {
+                catalogName.text = history.weavingName
+                catalogArea.text = history.confidenceScore.toString()
+                Glide.with(catalogPhoto.context)
+                    .load(history.imageUrl)
+                    .into(catalogPhoto)
 
-            binding.root.setOnClickListener {
-                onItemClick?.invoke(history.id)
+                root.setOnClickListener {
+                    onItemClick?.invoke(history.id)
+                }
+
+                btnDeleteHistory.setOnClickListener {
+                    onDeleteClick?.invoke(history.id)
+                }
             }
         }
     }

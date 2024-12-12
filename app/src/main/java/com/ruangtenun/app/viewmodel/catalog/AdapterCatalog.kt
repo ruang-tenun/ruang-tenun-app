@@ -6,11 +6,12 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ruangtenun.app.data.remote.response.Catalog
+import com.ruangtenun.app.R
+import com.ruangtenun.app.data.remote.response.CatalogItem
 import com.ruangtenun.app.databinding.CardCatalogBinding
 
-class AdapterCatalog(private val onItemClick: ((String?) -> Unit)? = null) :
-    ListAdapter<Catalog, AdapterCatalog.CatalogViewHolder>(DIFF_CALLBACK) {
+class AdapterCatalog(private val onItemClick: ((Int?) -> Unit)? = null) :
+    ListAdapter<CatalogItem, AdapterCatalog.CatalogViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CatalogViewHolder {
         val binding =
@@ -24,35 +25,36 @@ class AdapterCatalog(private val onItemClick: ((String?) -> Unit)? = null) :
 
     class CatalogViewHolder(
         private val binding: CardCatalogBinding,
-        private val onItemClick: ((String?) -> Unit)?
+        private val onItemClick: ((Int?) -> Unit)?
     ) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(catalog: Catalog) {
+        fun bind(catalog: CatalogItem) {
             binding.catalogName.text = catalog.name
-            binding.catalogArea.text = catalog.local
+            binding.catalogArea.text = catalog.address
             Glide.with(binding.catalogPhoto.context)
                 .load(catalog.imageUrl)
+                .placeholder(R.drawable.ic_place_holder)
                 .into(binding.catalogPhoto)
 
             binding.root.setOnClickListener {
-                onItemClick?.invoke(catalog.id)
+                onItemClick?.invoke(catalog.categoryId)
             }
         }
     }
 
     companion object {
-        val DIFF_CALLBACK: DiffUtil.ItemCallback<Catalog> =
-            object : DiffUtil.ItemCallback<Catalog>() {
+        val DIFF_CALLBACK: DiffUtil.ItemCallback<CatalogItem> =
+            object : DiffUtil.ItemCallback<CatalogItem>() {
                 override fun areItemsTheSame(
-                    oldItem: Catalog,
-                    newItem: Catalog
+                    oldItem: CatalogItem,
+                    newItem: CatalogItem
                 ): Boolean {
-                    return oldItem.id == newItem.id
+                    return oldItem.categoryId == newItem.categoryId
                 }
 
                 override fun areContentsTheSame(
-                    oldItem: Catalog,
-                    newItem: Catalog
+                    oldItem: CatalogItem,
+                    newItem: CatalogItem
                 ): Boolean {
                     return oldItem == newItem
                 }

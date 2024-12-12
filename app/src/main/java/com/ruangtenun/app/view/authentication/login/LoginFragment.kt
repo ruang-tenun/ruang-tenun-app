@@ -77,6 +77,8 @@ class LoginFragment : Fragment() {
     private fun observeView(authViewModel: AuthViewModel) {
         authViewModel.loginResult.observe(viewLifecycleOwner) { result ->
             when (result) {
+                is ResultState.Idle -> {
+                }
                 is ResultState.Success -> {
                     AuthRepository.clearInstance()
                     ViewModelFactory.clearInstance()

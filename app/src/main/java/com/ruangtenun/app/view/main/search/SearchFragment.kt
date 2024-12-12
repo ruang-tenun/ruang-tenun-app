@@ -39,7 +39,8 @@ import kotlin.getValue
 
 class SearchFragment : Fragment() {
 
-    private lateinit var binding: FragmentSearchBinding
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     private var currentImageUri: Uri? = null
 
     private val cropResultLauncher = registerForActivityResult(
@@ -123,7 +124,7 @@ class SearchFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentSearchBinding.inflate(layoutInflater, container, false)
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
         val searchViewModel: SearchViewModel by viewModels {
@@ -167,11 +168,14 @@ class SearchFragment : Fragment() {
     private fun observeView(searchViewModel: SearchViewModel, imageUri: Uri? = null) {
         searchViewModel.predictResult.observe(viewLifecycleOwner) { result ->
             when (result) {
+                is ResultState.Idle -> {
+                    binding.previewImage.setImageURI(imageUri)
+                }
                 is ResultState.Error -> {
                     showLoading(false)
                     showDialog(
                         requireContext(),
-                        "gagal memprediksi",
+                        getString(R.string.failed_to_predict),
                         result.error,
                         getString(R.string.ok)
                     )
@@ -180,9 +184,11 @@ class SearchFragment : Fragment() {
                 is ResultState.Success -> {
                     showLoading(false)
                     moveToResult(result.data, currentImageUri)
+                    searchViewModel.resetPredictResult()
                 }
             }
         }
+
     }
 
     private fun scanImage(searchViewModel: SearchViewModel) {
@@ -213,11 +219,16 @@ class SearchFragment : Fragment() {
     }
 
     private fun showLoading(isLoading: Boolean) {
-        binding.loading.visibility = if (isLoading) View.VISIBLE else View.GONE
+        binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     companion object {
         private const val CAMERA_PERMISSION = Manifest.permission.CAMERA
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
 

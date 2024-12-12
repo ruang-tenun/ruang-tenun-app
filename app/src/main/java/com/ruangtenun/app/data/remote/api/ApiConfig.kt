@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 
 object ApiConfig {
 
-    private const val BASE_URL_AUTH = BuildConfig.BASE_URL_AUTH
+    private const val BASE_URL = BuildConfig.BASE_URL
     private const val BASE_URL_PREDICT = BuildConfig.BASE_URL_PREDICT
 
     private val client: OkHttpClient by lazy {
@@ -27,9 +27,9 @@ object ApiConfig {
             .build()
     }
 
-    private val retrofitAuth: Retrofit by lazy {
+    private val retrofit: Retrofit by lazy {
         Retrofit.Builder()
-            .baseUrl(BASE_URL_AUTH)
+            .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client)
             .build()
@@ -44,7 +44,7 @@ object ApiConfig {
     }
 
     fun getAuthService(): ApiServiceAuth {
-        return retrofitAuth.create(ApiServiceAuth::class.java)
+        return retrofit.create(ApiServiceAuth::class.java)
     }
 
     fun getPredictService(): ApiServicePredict {
@@ -52,10 +52,10 @@ object ApiConfig {
     }
 
     fun getCatalogService(): ApiServiceCatalog {
-        return retrofitPredict.create(ApiServiceCatalog::class.java)
+        return retrofit.create(ApiServiceCatalog::class.java)
     }
 
     fun getProductService(): ApiServiceProduct {
-        return retrofitPredict.create(ApiServiceProduct::class.java)
+        return retrofit.create(ApiServiceProduct::class.java)
     }
 }

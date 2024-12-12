@@ -70,4 +70,10 @@
         android:label="@string/detail_product"
         tools:layout="@layout/fragment_detail" />
 
+    <fragment
+        android:id="@+id/navigation_detail_catalog"
+        android:name="com.ruangtenun.app.view.main.detail.DetailCatalogFragment"
+        android:label="@string/detail_catalog"
+        tools:layout="@layout/fragment_detail_catalog" />
+
 </navigation>

@@ -1,6 +1,7 @@
 package com.ruangtenun.app.viewmodel.search
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,19 +13,25 @@ import okhttp3.MultipartBody
 
 class SearchViewModel(private val predictRepository: PredictRepository) : ViewModel() {
 
-    val predictResult = MutableLiveData<ResultState<PredictResponse>>()
+    private val _predictResult = MutableLiveData<ResultState<PredictResponse>>(ResultState.Idle)
+    val predictResult: LiveData<ResultState<PredictResponse>> = _predictResult
 
     fun predict(image: MultipartBody.Part) {
         viewModelScope.launch {
-            predictResult.value = ResultState.Loading
+            _predictResult.value = ResultState.Loading
 
             try {
                 val response = predictRepository.predict(image)
-                predictResult.value = ResultState.Success(response)
+                _predictResult.value = ResultState.Success(response)
             } catch (e: Exception) {
-                predictResult.value = ResultState.Error(e.toString())
+                _predictResult.value = ResultState.Error(e.toString())
                 Log.d("SearchViewModel", "Error: $e")
             }
         }
     }
+
+    fun resetPredictResult() {
+        _predictResult.value = ResultState.Idle
+    }
 }
+

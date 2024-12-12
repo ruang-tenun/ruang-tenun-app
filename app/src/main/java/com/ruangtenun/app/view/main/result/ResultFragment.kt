@@ -22,7 +22,8 @@ import com.ruangtenun.app.viewmodel.history.HistoryViewModel
 
 class ResultFragment : Fragment() {
 
-    private lateinit var binding: FragmentResultBinding
+    private var _binding: FragmentResultBinding? = null
+    private val binding get() = _binding!!
 
     private val historyViewModel: HistoryViewModel by viewModels {
         ViewModelFactory.getInstance(requireActivity().application)
@@ -32,7 +33,7 @@ class ResultFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentResultBinding.inflate(inflater, container, false)
+        _binding = FragmentResultBinding.inflate(inflater, container, false)
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
@@ -44,15 +45,15 @@ class ResultFragment : Fragment() {
         val imageUri = arguments?.getParcelable<Uri>(PREDICT_IMAGE)
 
         val confidenceLevel = when {
-            predictResult?.confidenceScore!! < 0.3 -> "Rendah"
-            predictResult.confidenceScore in 0.3..0.6 -> "Cukup"
-            predictResult.confidenceScore in 0.6..0.85 -> "Bagus"
-            else -> "Sangat Bagus"
+            predictResult?.confidenceScore!! < 0.3 -> getString(R.string.low)
+            predictResult.confidenceScore in 0.3..0.6 -> getString(R.string.enough)
+            predictResult.confidenceScore in 0.6..0.85 -> getString(R.string.good)
+            else -> getString(R.string.very_good)
         }
 
         predictResult.let {
             binding.resultClass.text = it.result
-            binding.resultDesc.text = "Tingkat Keyakinan: $confidenceLevel"
+            binding.resultDesc.text = getString(R.string.accuracy_desc, confidenceLevel)
         }
 
         imageUri?.let {
@@ -61,11 +62,15 @@ class ResultFragment : Fragment() {
 
         historyViewModel.saveHistoryState.observe(viewLifecycleOwner) { result ->
             when (result) {
+                is ResultState.Idle -> {
+                }
+
                 is ResultState.Loading -> showLoading(true)
                 is ResultState.Success -> {
                     showLoading(false)
                     Toast.makeText(requireContext(), result.data, Toast.LENGTH_SHORT).show()
                 }
+
                 is ResultState.Error -> {
                     showLoading(false)
                     Toast.makeText(requireContext(), result.error, Toast.LENGTH_SHORT).show()
@@ -93,10 +98,15 @@ class ResultFragment : Fragment() {
     ) {
         imageUri?.let {
             val filename = "image_${System.currentTimeMillis()}.jpg"
-            val savedImagePath = FileUtils.saveImageToInternalStorage(requireContext(), it, filename)
+            val savedImagePath =
+                FileUtils.saveImageToInternalStorage(requireContext(), it, filename)
 
             if (savedImagePath == null) {
-                Toast.makeText(requireContext(), "Gagal menyimpan image ke penyimpanan", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.failed_save_image_to_storage),
+                    Toast.LENGTH_SHORT
+                ).show()
                 return
             }
 
@@ -117,5 +127,10 @@ class ResultFragment : Fragment() {
     companion object {
         const val PREDICT_RESULT = "predict_result"
         const val PREDICT_IMAGE = "predict_image"
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

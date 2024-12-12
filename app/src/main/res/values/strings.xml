@@ -112,4 +112,23 @@
     <string name="save_image">Save Prediction To History</string>
     <string name="are_you_sure_want_to_save">Are You Sure want to save?</string>
     <string name="failed_to_save_image">Failed To Save Image</string>
+    <string name="no_products_found">No Products Found</string>
+    <string name="no_products_nearby">No Products available nearby</string>
+    <string name="search_product">Search Product</string>
+    <string name="delete_history">Delete History</string>
+    <string name="supporting_text">Are Your Sure To Delete History</string>
+    <string name="no_data_found">No data found</string>
+    <string name="data_saved_successfully">Data Saved Successfully</string>
+    <string name="failed_to_save_data">Failed to save data</string>
+    <string name="link_not_found">Link Website Not Found</string>
+    <string name="data_deleted_successfully">Data Delete Successfully</string>
+    <string name="failed_to_delete_data">Failed To Delete</string>
+    <string name="accuracy_desc">Tingkat Keyakinan: %1$s</string>
+    <string name="low">Low</string>
+    <string name="enough">Enough</string>
+    <string name="good">Good</string>
+    <string name="very_good">Very Good</string>
+    <string name="failed_save_image_to_storage">Failed to save image to storage</string>
+    <string name="failed_to_predict">Failed To Predict</string>
+    <string name="detail_catalog">Detail Catalog</string>
 </resources>

@@ -6,34 +6,34 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.ruangtenun.app.R
 import com.ruangtenun.app.data.remote.response.ProductsItem
-import com.ruangtenun.app.databinding.CardProductBinding
+import com.ruangtenun.app.databinding.CardProductNearBinding
 
-class AdapterProduct(private val onItemClick: ((Int?) -> Unit)? = null) :
-    ListAdapter<ProductsItem, AdapterProduct.FavoriteEventViewHolder>(DIFF_CALLBACK) {
+class AdapterProductNear(private val onItemClick: ((Int?) -> Unit)? = null) :
+    ListAdapter<ProductsItem, AdapterProductNear.ProductNearViewHolder>(DIFF_CALLBACK) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FavoriteEventViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ProductNearViewHolder {
         val binding =
-            CardProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return FavoriteEventViewHolder(binding, onItemClick)
+            CardProductNearBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ProductNearViewHolder(binding, onItemClick)
     }
 
-    override fun onBindViewHolder(holder: FavoriteEventViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ProductNearViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
 
-    class FavoriteEventViewHolder(
-        private val binding: CardProductBinding,
+    class ProductNearViewHolder(
+        private val binding: CardProductNearBinding,
         private val onItemClick: ((Int?) -> Unit)?
     ) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(product: ProductsItem) {
             binding.productName.text = product.name
-            binding.productSeller.text = product.seller
+            binding.productArea.text = product.address
+            binding.sellerName.text = product.seller
+            binding.productCategories.text = product.category
             Glide.with(binding.productPhoto.context)
                 .load(product.imageUrl)
-                .placeholder(R.drawable.ic_place_holder)
                 .into(binding.productPhoto)
 
             binding.root.setOnClickListener {

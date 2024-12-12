@@ -12,14 +12,15 @@ import com.ruangtenun.app.databinding.FragmentPartnerBinding
 
 class PartnerFragment : Fragment() {
 
-    private lateinit var binding: FragmentPartnerBinding
+    private var _binding: FragmentPartnerBinding? = null
+    private val binding get() = _binding!!
 //    private lateinit var adapter: ProductAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPartnerBinding.inflate(inflater, container, false)
+        _binding = FragmentPartnerBinding.inflate(inflater, container, false)
 
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 

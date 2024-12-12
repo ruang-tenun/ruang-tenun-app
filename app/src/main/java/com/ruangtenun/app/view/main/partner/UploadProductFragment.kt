@@ -30,7 +30,8 @@ import java.util.Locale
 
 class UploadProductFragment : Fragment() {
 
-    private lateinit var binding: FragmentUploadProductBinding
+    private var _binding: FragmentUploadProductBinding? = null
+    private val binding get() = _binding!!
     private var currentImageUri: Uri? = null
 
     private val cropResultLauncher = registerForActivityResult(
@@ -129,7 +130,7 @@ class UploadProductFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentUploadProductBinding.inflate(inflater, container, false)
+        _binding = FragmentUploadProductBinding.inflate(inflater, container, false)
         (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
         if (!allPermissionsGranted()) {
