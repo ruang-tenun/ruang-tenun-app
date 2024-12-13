@@ -21,5 +21,5 @@ interface ApiServiceAuth {
     suspend fun login(
         @Field("email") email: String,
         @Field("password") password: String
-    ) : LoginResponse
+    ): LoginResponse
 }

@@ -76,4 +76,10 @@
         android:label="@string/detail_catalog"
         tools:layout="@layout/fragment_detail_catalog" />
 
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.ruangtenun.app.view.main.favorite.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
+
 </navigation>

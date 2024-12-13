@@ -22,12 +22,12 @@ class FavoriteViewModel(private val favoriteRepository: FavoriteRepository) : Vi
     fun getAllFavorite(token: String) {
         viewModelScope.launch {
             _allFavorite.value = ResultState.Loading
-            try {
-                val response = favoriteRepository.getAllFavorite(token)
-                _allFavorite.value = ResultState.Success(response)
-            } catch (e: HttpException) {
-                _allFavorite.value = ResultState.Error(e.message.toString())
-            }
+             try {
+                 val response = favoriteRepository.getAllFavorite(token)
+                 _allFavorite.value = ResultState.Success(response)
+             } catch (e: HttpException) {
+                 _allFavorite.value = ResultState.Error(e.message.toString())
+             }
         }
     }
 

@@ -22,8 +22,8 @@ class ViewModelFactory private constructor(
     private val catalogRepository: CatalogRepository,
     private val authRepository: AuthRepository,
     private val predictRepository: PredictRepository,
-    private val application: Application,
-    private val favoriteRepository: FavoriteRepository
+    private val favoriteRepository: FavoriteRepository,
+    private val application: Application
 ) : ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
@@ -44,7 +44,6 @@ class ViewModelFactory private constructor(
             modelClass.isAssignableFrom(SearchViewModel::class.java) -> {
                 SearchViewModel(predictRepository) as T
             }
-
             modelClass.isAssignableFrom(FavoriteViewModel::class.java) -> {
                 FavoriteViewModel(favoriteRepository) as T
             }
@@ -71,8 +70,8 @@ class ViewModelFactory private constructor(
                     catalogRepository,
                     authRepository,
                     predictRepository,
-                    application,
-                    favoriteRepository
+                    favoriteRepository,
+                    application
                 ).also { instance = it }
             }
 
