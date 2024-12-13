@@ -19,6 +19,9 @@ data class LoginResponse(
 
 data class Payload(
 
+	@field:SerializedName("id")
+	val id: Int,
+
 	@field:SerializedName("email")
 	val email: String,
 

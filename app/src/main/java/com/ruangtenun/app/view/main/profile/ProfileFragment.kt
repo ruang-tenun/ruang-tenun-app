@@ -33,6 +33,10 @@ class ProfileFragment : Fragment() {
         }
 
         binding.apply {
+            cardFavorite.setOnClickListener {
+                findNavController().navigate(R.id.navigation_favorite)
+            }
+
             cardProduct.setOnClickListener {
                 findNavController().navigate(R.id.navigation_partner)
             }

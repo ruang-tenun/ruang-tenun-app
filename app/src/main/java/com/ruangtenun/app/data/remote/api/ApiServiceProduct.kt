@@ -15,7 +15,7 @@ import retrofit2.http.Path
 interface ApiServiceProduct {
 
     @Multipart
-    @POST("product")
+    @POST("api/product")
     suspend fun addProduct(
         @Header("Authorization") token: String,
         @Part image: MultipartBody.Part,
