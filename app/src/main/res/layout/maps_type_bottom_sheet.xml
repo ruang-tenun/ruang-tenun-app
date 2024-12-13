@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tv_title_map_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/map_type"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:drawableEndCompat="@drawable/ic_close_24dp" />
+
+    <GridLayout
+        android:id="@+id/grid_map_types"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="4"
+        android:rowCount="1">
+
+        <TextView
+            android:id="@+id/tv_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="4dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/map_default"
+            android:textSize="14sp"
+            app:drawableTopCompat="@drawable/ic_map_default" />
+
+        <TextView
+            android:id="@+id/tv_satellite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="4dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/map_satellite"
+            android:textSize="14sp"
+            app:drawableTopCompat="@drawable/ic_map_satellite" />
+
+        <TextView
+            android:id="@+id/tv_terrain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="4dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/map_terrain"
+            android:textSize="14sp"
+            app:drawableTopCompat="@drawable/ic_map_terrain" />
+
+        <TextView
+            android:id="@+id/tv_hybrid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:drawablePadding="4dp"
+            android:focusable="true"
+            android:gravity="center"
+            android:padding="8dp"
+            android:text="@string/map_hybrid"
+            android:textSize="14sp"
+            app:drawableTopCompat="@drawable/ic_map_hybrid" />
+
+    </GridLayout>
+</LinearLayout>

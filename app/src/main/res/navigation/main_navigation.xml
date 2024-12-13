@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.ruangtenun.app.view.main.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_product"
+        android:name="com.ruangtenun.app.view.main.product.ProductFragment"
+        android:label="@string/title_product"
+        tools:layout="@layout/fragment_product" />
+
+    <fragment
+        android:id="@+id/navigation_scanner"
+        android:name="com.ruangtenun.app.view.main.scanner.ScannerFragment"
+        android:label="@string/title_scanner"
+        tools:layout="@layout/fragment_scanner" />
+
+    <fragment
+        android:id="@+id/navigation_catalog"
+        android:name="com.ruangtenun.app.view.main.catalog.CatalogFragment"
+        android:label="@string/title_catalog"
+        tools:layout="@layout/fragment_catalog" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.ruangtenun.app.view.main.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/navigation_search"
+        android:name="com.ruangtenun.app.view.main.search.SearchFragment"
+        android:label="@string/title_search"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/navigation_partner"
+        android:name="com.ruangtenun.app.view.main.partner.PartnerFragment"
+        android:label="@string/your_product"
+        tools:layout="@layout/fragment_partner" />
+
+    <fragment
+        android:id="@+id/navigation_history"
+        android:name="com.ruangtenun.app.view.main.history.HistoryFragment"
+        android:label="@string/history_menu"
+        tools:layout="@layout/fragment_history" />
+
+    <fragment
+        android:id="@+id/navigation_upload_product"
+        android:name="com.ruangtenun.app.view.main.partner.UploadProductFragment"
+        android:label="@string/upload_product"
+        tools:layout="@layout/fragment_upload_product" />
+    <fragment
+        android:id="@+id/navigation_result"
+        android:name="com.ruangtenun.app.view.main.result.ResultFragment"
+        android:label="@string/title_result"
+        tools:layout="@layout/fragment_result" />
+
+    <fragment
+        android:id="@+id/navigation_detail"
+        android:name="com.ruangtenun.app.view.main.detail.DetailFragment"
+        android:label="@string/detail_product"
+        tools:layout="@layout/fragment_detail" />
+
+    <fragment
+        android:id="@+id/navigation_detail_catalog"
+        android:name="com.ruangtenun.app.view.main.detail.DetailCatalogFragment"
+        android:label="@string/detail_catalog"
+        tools:layout="@layout/fragment_detail_catalog" />
+
+    <fragment
+        android:id="@+id/navigation_favorite"
+        android:name="com.ruangtenun.app.view.main.favorite.FavoriteFragment"
+        android:label="fragment_favorite"
+        tools:layout="@layout/fragment_favorite" />
+
+</navigation>
