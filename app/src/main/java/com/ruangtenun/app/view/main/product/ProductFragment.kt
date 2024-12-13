@@ -1,26 +1,29 @@
 package com.ruangtenun.app.view.main.product
 
-import android.graphics.Rect
+import android.app.AlertDialog
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.ruangtenun.app.R
 import com.ruangtenun.app.data.remote.response.CatalogItem
+import com.ruangtenun.app.data.remote.response.FavoriteItem
 import com.ruangtenun.app.data.remote.response.ProductsItem
 import com.ruangtenun.app.databinding.FragmentProductBinding
 import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
 import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
+import com.ruangtenun.app.viewmodel.favorite.FavoriteViewModel
 import com.ruangtenun.app.viewmodel.main.AdapterProduct
 import com.ruangtenun.app.viewmodel.main.MainViewModel
 
@@ -30,7 +33,6 @@ class ProductFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapterProduct: AdapterProduct
-    private lateinit var catalogAdapter: ArrayAdapter<String>
     private val catalogOptions = mutableListOf<CatalogItem>()
 
     private val mainViewModel: MainViewModel by viewModels {
@@ -41,7 +43,12 @@ class ProductFragment : Fragment() {
         ViewModelFactory.getInstance(requireActivity().application)
     }
 
+    private val favoriteViewModel: FavoriteViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
+
     private var token = ""
+    private var userId = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,13 +58,14 @@ class ProductFragment : Fragment() {
 
         authViewModel.getSession().observe(viewLifecycleOwner) { user ->
             token = user.token
+            userId = user.id
             mainViewModel.fetchCatalogs(token)
             mainViewModel.fetchProducts(token)
+            favoriteViewModel.getFavoriteByUserId(token, userId)
         }
 
         setupRecyclerView()
         setupAdapter()
-        setupCatalogDropdown()
         observeViewModel()
 
         binding.apply {
@@ -66,8 +74,21 @@ class ProductFragment : Fragment() {
             searchView.editText.setOnEditorActionListener { _, _, _ ->
                 val keyword = searchView.text.toString()
                 mainViewModel.searchProducts(keyword)
+                swipeRefreshLayout.setOnRefreshListener {
+                    mainViewModel.fetchProducts(token)
+                    swipeRefreshLayout.isRefreshing = false
+                }
                 searchView.hide()
                 true
+            }
+
+            btnFilter.setOnClickListener {
+                showCatalogFilterDialog()
+            }
+
+            swipeRefreshLayout.setOnRefreshListener {
+                mainViewModel.fetchProducts(token)
+                swipeRefreshLayout.isRefreshing = false
             }
         }
 
@@ -90,26 +111,6 @@ class ProductFragment : Fragment() {
         binding.rvProducts.adapter = adapterProduct
     }
 
-    private fun setupCatalogDropdown() {
-        catalogAdapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_dropdown_item_1line,
-            mutableListOf()
-        )
-        binding.catalogDropdown.setAdapter(catalogAdapter)
-
-        binding.catalogDropdown.setOnClickListener {
-            if (catalogAdapter.isEmpty) {
-                mainViewModel.fetchCatalogs(token)
-            }
-        }
-
-        binding.catalogDropdown.setOnItemClickListener { _, _, position, _ ->
-            val selectedCatalog = if (position == 0) null else catalogOptions[position - 1].name
-            mainViewModel.filterProductsByCatalog(selectedCatalog)
-        }
-    }
-
     private fun observeViewModel() {
         mainViewModel.catalogState.observe(viewLifecycleOwner) { result ->
             when (result) {
@@ -121,10 +122,6 @@ class ProductFragment : Fragment() {
                     showLoading(false)
                     catalogOptions.clear()
                     catalogOptions.addAll(result.data)
-                    val catalogNames = listOf("All") + catalogOptions.map { it.name.orEmpty() }
-                    catalogAdapter.clear()
-                    catalogAdapter.addAll(catalogNames)
-                    catalogAdapter.notifyDataSetChanged()
                 }
 
                 is ResultState.Error -> {
@@ -134,36 +131,96 @@ class ProductFragment : Fragment() {
             }
         }
 
-        mainViewModel.productState.observe(viewLifecycleOwner) { result ->
-            when (result) {
-                is ResultState.Idle -> {
+        mainViewModel.productState.observe(viewLifecycleOwner) { productResult ->
+            when (productResult) {
+                is ResultState.Success -> {
+                    showLoading(false)
+                    setProducts(productResult.data)
                 }
 
                 is ResultState.Loading -> showLoading(true)
-                is ResultState.Success -> {
+                is ResultState.Error -> {
                     showLoading(false)
-                    setProducts(result.data)
+                    showToast(requireContext(), productResult.error)
+                }
+
+                else -> {}
+            }
+        }
+
+        favoriteViewModel.favoriteByUserId.observe(viewLifecycleOwner) { favoriteResult ->
+            when (favoriteResult) {
+                is ResultState.Success -> {
+                    adapterProduct.setFavorites(favoriteResult.data) // Kirim data favorit ke adapter
                 }
 
                 is ResultState.Error -> {
-                    showLoading(false)
-                    showToast(requireContext(), result.error)
+                    showToast(requireContext(), favoriteResult.error)
                 }
+
+                is ResultState.Loading -> { /* Tampilkan loading jika diperlukan */
+                }
+
+                else -> {}
             }
         }
     }
 
     private fun setProducts(products: List<ProductsItem?>?) {
         adapterProduct.submitList(products.orEmpty())
-        if (products.isNullOrEmpty()) {
-            binding.tvEmptyProducts.visibility = View.VISIBLE
-        } else {
-            binding.tvEmptyProducts.visibility = View.GONE
-        }
+        binding.tvEmptyProducts.visibility =
+            if (products.isNullOrEmpty()) View.VISIBLE else View.GONE
     }
 
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun showCatalogFilterDialog() {
+        val dialogView =
+            LayoutInflater.from(requireContext()).inflate(R.layout.dialog_categories_dropdown, null)
+        val dialog = AlertDialog.Builder(requireContext())
+            .setView(dialogView)
+            .create()
+
+        val spinnerCategories = dialogView.findViewById<Spinner>(R.id.spinnerCategories)
+        val btnCloseDialog = dialogView.findViewById<Button>(R.id.btnCloseDialog)
+
+        val catalogNames = listOf("All") + catalogOptions.map { it.name.orEmpty() }
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_item,
+            catalogNames
+        )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinnerCategories.adapter = adapter
+
+        spinnerCategories.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                val selectedCategory =
+                    if (position == 0) null else catalogOptions[position - 1].name
+                mainViewModel.filterByCatalog(selectedCategory)
+                Toast.makeText(
+                    requireContext(),
+                    "Filtered: ${catalogNames[position]}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {
+            }
+        }
+
+        btnCloseDialog.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
     }
 
     override fun onResume() {
@@ -176,5 +233,3 @@ class ProductFragment : Fragment() {
         _binding = null
     }
 }
-
-

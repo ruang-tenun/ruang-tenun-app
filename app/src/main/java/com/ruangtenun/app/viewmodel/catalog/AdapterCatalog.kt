@@ -34,6 +34,8 @@ class AdapterCatalog(private val onItemClick: ((Int?) -> Unit)? = null) :
             Glide.with(binding.catalogPhoto.context)
                 .load(catalog.imageUrl)
                 .placeholder(R.drawable.ic_place_holder)
+                .thumbnail(0.25f)
+                .override(400, 300)
                 .into(binding.catalogPhoto)
 
             binding.root.setOnClickListener {

@@ -1,60 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="190dp"
     android:layout_height="220dp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginEnd="10dp"
     android:layout_marginBottom="10dp"
-    app:cardElevation="10dp"
-    app:strokeWidth="0dp"
     android:checkable="true"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    app:cardElevation="5dp"
+    app:strokeWidth="0dp">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        tools:ignore="UseCompoundDrawables">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/productPhoto"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="150dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_place_holder"
             android:contentDescription="@string/product_photo"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_place_holder"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabLove"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/add_to_favorite"
+            app:layout_constraintBottom_toBottomOf="@id/productPhoto"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.88"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productPhoto"
+            app:layout_constraintVertical_bias="0.571"
+            app:srcCompat="@drawable/favorite_24dp" />
 
         <TextView
             android:id="@+id/productSeller"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginTop="8dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
             android:ellipsize="end"
             android:fontFamily="@font/inter"
-            android:maxLines="3"
+            android:maxLines="1"
             android:textAlignment="center"
             android:textSize="16sp"
-            tools:ignore="TextSizeCheck"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/productPhoto"
             tools:text="Songket Palembang" />
 
         <TextView
             android:id="@+id/productName"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:ellipsize="end"
             android:fontFamily="@font/inter"
-            android:maxLines="3"
+            android:maxLines="1"
             android:textAlignment="center"
             android:textSize="16sp"
             android:textStyle="bold"
-            tools:ignore="TextSizeCheck"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/productSeller"
             tools:text="This is categories" />
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

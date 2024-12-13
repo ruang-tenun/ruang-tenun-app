@@ -58,4 +58,8 @@ object ApiConfig {
     fun getProductService(): ApiServiceProduct {
         return retrofit.create(ApiServiceProduct::class.java)
     }
+
+    fun getFavoriteService(): ApiServiceFavorite {
+        return retrofit.create(ApiServiceFavorite::class.java)
+    }
 }

@@ -24,11 +24,13 @@ class MainViewModel(
     private val _catalogState = MutableLiveData<ResultState<List<CatalogItem>>>()
     val catalogState: LiveData<ResultState<List<CatalogItem>>> = _catalogState
 
+    private val _catalogDetailState = MutableLiveData<ResultState<CatalogDetail>>()
+    val catalogDetailState: LiveData<ResultState<CatalogDetail>> get() = _catalogDetailState
+
     private val _productState = MutableLiveData<ResultState<List<ProductsItem>>>()
     val productState: LiveData<ResultState<List<ProductsItem>>> get() = _productState
 
     private val _allProducts = mutableListOf<ProductsItem>()
-    val allProducts: List<ProductsItem> get() = _allProducts
 
     private var currentKeyword: String = ""
     private var currentCatalog: String? = null
@@ -36,18 +38,19 @@ class MainViewModel(
     private val _productDetailState = MutableLiveData<ResultState<ProductDetail>>()
     val productDetailState: LiveData<ResultState<ProductDetail>> get() = _productDetailState
 
-    private val _catalogDetailState = MutableLiveData<ResultState<CatalogDetail>>()
-    val catalogDetailState: LiveData<ResultState<CatalogDetail>> get() = _catalogDetailState
+    init {
+        _productState.value = ResultState.Loading
+    }
 
     fun fetchProducts(token: String) {
-        if (_productState.value !is ResultState.Success) {
-            _productState.value = ResultState.Loading
-            viewModelScope.launch {
-                val result = productsRepository.getAllProduct(token)
-                if (result is ResultState.Success) {
-                    _allProducts.clear()
-                    _allProducts.addAll(result.data)
-                }
+        _productState.value = ResultState.Loading
+        viewModelScope.launch {
+            val result = productsRepository.getAllProduct(token)
+            if (result is ResultState.Success) {
+                _allProducts.clear()
+                _allProducts.addAll(result.data)
+                filterProducts()
+            } else {
                 _productState.value = result
             }
         }
@@ -88,8 +91,8 @@ class MainViewModel(
         filterProducts()
     }
 
-    fun filterProductsByCatalog(catalogName: String?) {
-        currentCatalog = catalogName
+    fun filterByCatalog(catalog: String?) {
+        currentCatalog = catalog
         filterProducts()
     }
 
@@ -106,8 +109,9 @@ class MainViewModel(
             filteredByKeyword.filter { it.category == currentCatalog }
         }
 
-        _productState.postValue(ResultState.Success(filteredByCatalog))
+        _productState.value = ResultState.Success(filteredByCatalog)
     }
+
 
     fun addProduct(
         token: String,
@@ -119,5 +123,4 @@ class MainViewModel(
     ): LiveData<ResultState<Response<AddProductResponse>>> {
         return productsRepository.addProduct(token, image, name, ecommerceUrl, lat, lon)
     }
-
 }

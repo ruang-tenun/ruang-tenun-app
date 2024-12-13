@@ -40,10 +40,11 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
 
             try {
                 val response = authRepository.login(email, password)
+                val id = response.payload.id
                 val name = response.payload.username
                 val token = response.token
                 val userModel =
-                    UserModel(name = name, email = email, token = token, isLogin = true)
+                    UserModel(id = id, name = name, email = email, token = token, isLogin = true)
                 saveSession(userModel)
                 loginResult.value = ResultState.Success(response)
                 Log.d("LoginViewModel", "Login success: $response")

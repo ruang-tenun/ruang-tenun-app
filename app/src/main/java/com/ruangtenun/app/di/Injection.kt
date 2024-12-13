@@ -9,6 +9,7 @@ import com.ruangtenun.app.data.local.pref.UserPreference
 import com.ruangtenun.app.data.local.pref.dataStore
 import com.ruangtenun.app.data.remote.api.ApiConfig
 import com.ruangtenun.app.data.repository.CatalogRepository
+import com.ruangtenun.app.data.repository.FavoriteRepository
 import com.ruangtenun.app.data.repository.ProductsRepository
 import com.ruangtenun.app.data.repository.HistoryRepository
 
@@ -38,6 +39,11 @@ object Injection {
     fun provideCatalogRepository(): CatalogRepository {
         val apiServiceCatalog = ApiConfig.getCatalogService()
         return CatalogRepository.getInstance(apiServiceCatalog)
+    }
+
+    fun provideFavoriteRepository(): FavoriteRepository {
+        val apiServiceFavorite = ApiConfig.getFavoriteService()
+        return FavoriteRepository.getInstance(apiServiceFavorite)
     }
 
 }

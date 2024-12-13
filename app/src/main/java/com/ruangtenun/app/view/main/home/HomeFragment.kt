@@ -18,12 +18,15 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.ruangtenun.app.R
 import com.ruangtenun.app.data.local.pref.UserModel
+import com.ruangtenun.app.data.remote.response.CatalogItem
 import com.ruangtenun.app.data.remote.response.ProductsItem
 import com.ruangtenun.app.databinding.FragmentHomeBinding
 import com.ruangtenun.app.utils.ResultState
+import com.ruangtenun.app.utils.SpaceItemDecoration
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
 import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
+import com.ruangtenun.app.viewmodel.catalog.AdapterCatalog
 import com.ruangtenun.app.viewmodel.main.AdapterProduct
 import com.ruangtenun.app.viewmodel.main.MainViewModel
 import java.util.Locale
@@ -45,6 +48,7 @@ class HomeFragment : Fragment() {
     private var token: String = ""
 
     private lateinit var productAdapter: AdapterProduct
+    private lateinit var adapterCatalog: AdapterCatalog
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestPermission()
@@ -71,28 +75,11 @@ class HomeFragment : Fragment() {
             showToast(requireContext(), token)
             displayUserData(user)
             mainViewModel.fetchProducts(token)
+            mainViewModel.fetchCatalogs(token)
         }
 
         setupRecyclerView()
-        mainViewModel.productState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is ResultState.Idle -> {
-                }
-
-                is ResultState.Loading -> showLoading(true)
-                is ResultState.Success -> {
-                    showLoading(false)
-                    getCurrentLocation { currentLocation ->
-                        setProducts(state.data, currentLocation)
-                    }
-                }
-
-                is ResultState.Error -> {
-                    showLoading(false)
-                    showToast(requireContext(), state.error)
-                }
-            }
-        }
+        observeViewModel()
 
         return _binding!!.root
     }
@@ -146,10 +133,20 @@ class HomeFragment : Fragment() {
 
     private fun setupRecyclerView() {
         productAdapter = AdapterProduct()
+        adapterCatalog = AdapterCatalog()
         binding.rvNear.apply {
             layoutManager =
                 LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = productAdapter
+        }
+        binding.rvCatalog.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = adapterCatalog
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = adapterCatalog
+            addItemDecoration(SpaceItemDecoration(50))
         }
     }
 
@@ -164,10 +161,28 @@ class HomeFragment : Fragment() {
                     ) <= 10000
         }
 
-        productAdapter.submitList(nearbyProducts)
-
-        if (nearbyProducts.isEmpty()) {
+        if (nearbyProducts.isNotEmpty()) {
+            productAdapter.submitList(nearbyProducts)
+            binding.tvEmptyProducts.visibility = View.GONE
+        } else {
+            binding.tvEmptyProducts.visibility = View.VISIBLE
             showToast(requireContext(), getString(R.string.no_products_nearby))
+            val closestProducts = products.mapNotNull { product ->
+                if (product.latitude != null && product.longitude != null) {
+                    val distance = calculateDistance(
+                        currentLocation.latitude,
+                        currentLocation.longitude,
+                        product.latitude,
+                        product.longitude
+                    )
+                    Pair(product, distance)
+                } else {
+                    null
+                }
+            }.sortedBy { it.second }
+
+            val topClosestProducts = closestProducts.take(5).map { it.first }
+            productAdapter.submitList(topClosestProducts)
         }
     }
 
@@ -185,9 +200,55 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun observeViewModel() {
+        mainViewModel.productState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                is ResultState.Idle -> {
+                }
+
+                is ResultState.Loading -> showLoading(true)
+                is ResultState.Success -> {
+                    showLoading(false)
+                    getCurrentLocation { currentLocation ->
+                        setProducts(state.data, currentLocation)
+                    }
+                }
+
+                is ResultState.Error -> {
+                    showLoading(false)
+                    showToast(requireContext(), state.error)
+                }
+            }
+        }
+
+        mainViewModel.catalogState.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is ResultState.Idle -> {
+                }
+
+                is ResultState.Loading -> showLoading(true)
+                is ResultState.Success -> {
+                    showLoading(false)
+                    setCatalog(result.data)
+                }
+
+                is ResultState.Error -> {
+                    showLoading(false)
+                    showToast(requireContext(), result.error)
+                }
+            }
+        }
+    }
+
+    private fun setCatalog(products: List<CatalogItem?>?) {
+        val limitedProducts = products?.take(3)
+        adapterCatalog.submitList(limitedProducts)
+    }
+
     private fun showLoading(isLoading: Boolean) {
         binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
+
 
     companion object {
         private const val LOCATION_PERMISSION = Manifest.permission.ACCESS_FINE_LOCATION
