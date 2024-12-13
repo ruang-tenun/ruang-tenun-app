@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,7 +42,7 @@ class HomeFragment : Fragment() {
         ViewModelFactory.getInstance(requireActivity().application)
     }
 
-    private var token: String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6InNhZWZ1bCIsImVtYWlsIjoic2FlZnVsQGdtYWlsLmNvbSIsImlhdCI6MTczNDAxNDkzMSwiZXhwIjoxNzM0MDE4NTMxfQ.OtWCCrSUGgUbTpUX0IgJEp6p_LfXORVNmPT1zROm6XE"
+    private var token: String = ""
 
     private lateinit var productAdapter: AdapterProduct
     private val requestPermissionLauncher =
@@ -65,15 +66,19 @@ class HomeFragment : Fragment() {
         checkLocationPermission()
 
         authViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            token = user.token
+            Log.d("HomeFragment", "Token: $token")
+            showToast(requireContext(), token)
             displayUserData(user)
+            mainViewModel.fetchProducts(token)
         }
 
-        mainViewModel.fetchProducts(token)
         setupRecyclerView()
         mainViewModel.productState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is ResultState.Idle -> {
                 }
+
                 is ResultState.Loading -> showLoading(true)
                 is ResultState.Success -> {
                     showLoading(false)
@@ -81,6 +86,7 @@ class HomeFragment : Fragment() {
                         setProducts(state.data, currentLocation)
                     }
                 }
+
                 is ResultState.Error -> {
                     showLoading(false)
                     showToast(requireContext(), state.error)
@@ -141,7 +147,8 @@ class HomeFragment : Fragment() {
     private fun setupRecyclerView() {
         productAdapter = AdapterProduct()
         binding.rvNear.apply {
-            layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = productAdapter
         }
     }
@@ -149,7 +156,12 @@ class HomeFragment : Fragment() {
     private fun setProducts(products: List<ProductsItem>, currentLocation: Location) {
         val nearbyProducts = products.filter { product ->
             product.latitude != null && product.longitude != null &&
-            calculateDistance(currentLocation.latitude, currentLocation.longitude, product.latitude, product.longitude) <= 10000
+                    calculateDistance(
+                        currentLocation.latitude,
+                        currentLocation.longitude,
+                        product.latitude,
+                        product.longitude
+                    ) <= 10000
         }
 
         productAdapter.submitList(nearbyProducts)

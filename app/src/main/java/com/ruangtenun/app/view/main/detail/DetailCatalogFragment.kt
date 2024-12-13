@@ -1,21 +1,21 @@
 package com.ruangtenun.app.view.main.detail
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.ruangtenun.app.R
-import com.ruangtenun.app.databinding.FragmentDetailBinding
 import com.ruangtenun.app.databinding.FragmentDetailCatalogBinding
 import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
+import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
 import com.ruangtenun.app.viewmodel.main.MainViewModel
 
 class DetailCatalogFragment : Fragment() {
@@ -23,14 +23,17 @@ class DetailCatalogFragment : Fragment() {
     private var _binding: FragmentDetailCatalogBinding? = null
     private val binding get() = _binding!!
 
-    private var productId: Int? = null
+    private var catalogId: Int? = null
 
     private val mainViewModel: MainViewModel by viewModels {
         ViewModelFactory.getInstance(requireActivity().application)
     }
 
-    private var token: String =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTczMzk4Nzg5NywiZXhwIjoxNzMzOTkxNDk3fQ.90Gg-oBh7e7K4WQMXrD5c8JQ4kQLspbmmuQ_WlgCrqs"
+    private val authViewModel: AuthViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
+
+    private var token: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,33 +41,35 @@ class DetailCatalogFragment : Fragment() {
     ): View {
         _binding = FragmentDetailCatalogBinding.inflate(layoutInflater, container, false)
 
-        productId = arguments?.getInt("productId")
+        (requireActivity() as AppCompatActivity).setSupportActionBar(binding.toolbar)
 
-        mainViewModel.fetchProductDetail(token, productId!!)
+        binding.toolbar.setNavigationOnClickListener {
+            findNavController().popBackStack()
+        }
 
-        mainViewModel.productDetailState.observe(viewLifecycleOwner) { result ->
+        authViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            token = user.token
+            mainViewModel.fetchCatalogDetail(token, catalogId!!)
+        }
+
+        catalogId = arguments?.getInt("catalogId")
+
+        mainViewModel.catalogDetailState.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ResultState.Idle -> {
                 }
+
                 is ResultState.Loading -> showLoading(true)
                 is ResultState.Success -> {
                     showLoading(false)
-                    val product = result.data
+                    val catalog = result.data
                     binding.apply {
-                        tvProductName.text = product.name
-                        tvOfflineLocation.text = product.latitude.toString()
-                        button.setOnClickListener {
-                            val link = product.ecommerceUrl
-                            if (!link.isNullOrEmpty()) {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(link))
-                                startActivity(intent)
-                            } else {
-                                showToast(requireContext(), getString(R.string.link_not_found))
-                            }
-
-                        }
+                        tvProductName.append("\n${catalog.name}")
+                        tvDescription.append("\n${catalog.description}")
+                        tvAddress.append("\n${catalog.address}")
                         Glide.with(requireContext())
-                            .load(product.imageUrl)
+                            .load(catalog.imageUrl)
+                            .placeholder(R.drawable.ic_place_holder)
                             .into(previewImage)
                     }
                 }

@@ -1,20 +1,13 @@
 package com.ruangtenun.app.data.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.liveData
 import com.google.gson.Gson
 import com.ruangtenun.app.data.remote.api.ApiServiceCatalog
 import com.ruangtenun.app.data.remote.response.CatalogDetail
 import com.ruangtenun.app.data.remote.response.CatalogDetailResponse
 import com.ruangtenun.app.data.remote.response.CatalogItem
-import com.ruangtenun.app.data.remote.response.CatalogResponse
-import com.ruangtenun.app.data.remote.response.ProductDetail
-import com.ruangtenun.app.data.remote.response.ProductDetailResponse
-import com.ruangtenun.app.data.remote.response.ProductsItem
 import com.ruangtenun.app.data.remote.response.ProductsResponse
 import com.ruangtenun.app.utils.ResultState
 import retrofit2.HttpException
-import retrofit2.Response
 
 class CatalogRepository(
     private val apiServiceCatalog: ApiServiceCatalog,
@@ -43,10 +36,9 @@ class CatalogRepository(
         return try {
             val response = apiServiceCatalog.getCatalogById(id, "Bearer $token")
             if (response.isSuccessful) {
-                val catalogList = response.body()?.catalogDetail
-                val detailCatalog = catalogList?.firstOrNull()
-                if (detailCatalog != null) {
-                    ResultState.Success(detailCatalog)
+                val catalogDetail = response.body()?.catalogDetail
+                if (catalogDetail != null) {
+                    ResultState.Success(catalogDetail)
                 } else {
                     ResultState.Error("Catalog not found")
                 }

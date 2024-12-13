@@ -33,7 +33,7 @@ class HistoryViewModel(
         fetchAllHistory()
     }
 
-    fun fetchAllHistory() {
+    private fun fetchAllHistory() {
         _loading.postValue(true)
         val source = historyRepository.getAllClassificationHistory()
         _allHistories.addSource(source) { data ->

@@ -55,7 +55,7 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
         }
     }
 
-    fun saveSession(user: UserModel) {
+    private fun saveSession(user: UserModel) {
         viewModelScope.launch {
             authRepository.saveSession(user)
             Log.d("AuthViewModel", "Session saved: $user")

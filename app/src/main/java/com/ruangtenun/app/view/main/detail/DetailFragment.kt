@@ -17,6 +17,7 @@ import com.ruangtenun.app.databinding.FragmentDetailBinding
 import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
+import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
 import com.ruangtenun.app.viewmodel.main.MainViewModel
 
 class DetailFragment : Fragment() {
@@ -30,8 +31,11 @@ class DetailFragment : Fragment() {
         ViewModelFactory.getInstance(requireActivity().application)
     }
 
-    private var token: String =
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NSwidXNlcm5hbWUiOiJ0ZXN0IiwiZW1haWwiOiJ0ZXN0QGdtYWlsLmNvbSIsImlhdCI6MTczMzk4Nzg5NywiZXhwIjoxNzMzOTkxNDk3fQ.90Gg-oBh7e7K4WQMXrD5c8JQ4kQLspbmmuQ_WlgCrqs"
+    private val authViewModel: AuthViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
+
+    private var token: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -45,14 +49,18 @@ class DetailFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        productId = arguments?.getInt("productId")
+        authViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            token = user.token
+            mainViewModel.fetchProductDetail(token, productId!!)
+        }
 
-        mainViewModel.fetchProductDetail(token, productId!!)
+        productId = arguments?.getInt("productId")
 
         mainViewModel.productDetailState.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is ResultState.Idle -> {
                 }
+
                 is ResultState.Loading -> showLoading(true)
                 is ResultState.Success -> {
                     showLoading(false)

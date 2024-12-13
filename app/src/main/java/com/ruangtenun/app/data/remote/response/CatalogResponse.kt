@@ -35,7 +35,7 @@ data class CatalogItem(
 data class CatalogDetailResponse(
 
     @field:SerializedName("payload")
-    val catalogDetail: List<CatalogDetail>? = null,
+    val catalogDetail: CatalogDetail? = null,
 
     @field:SerializedName("message")
     val message: String? = null,

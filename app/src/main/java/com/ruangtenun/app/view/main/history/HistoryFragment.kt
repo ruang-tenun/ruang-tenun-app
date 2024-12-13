@@ -57,12 +57,6 @@ class HistoryFragment : Fragment() {
             rvHistory.addItemDecoration(itemDecoration)
 
             adapterHistory = AdapterHistory(
-                onItemClick = { historyId ->
-                    val bundle = Bundle().apply {
-                        historyId?.let { putString("historyId", historyId) }
-                    }
-                    findNavController().navigate(R.id.navigation_detail, bundle)
-                },
                 onDeleteClick = { historyId ->
                     historyId?.let { id ->
                         MaterialAlertDialogBuilder(requireContext())
@@ -77,7 +71,7 @@ class HistoryFragment : Fragment() {
                             }
                             .show()
                     }
-                }
+                }, application = requireActivity().application
             )
 
             rvHistory.adapter = adapterHistory

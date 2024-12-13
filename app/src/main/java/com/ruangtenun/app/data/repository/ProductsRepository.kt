@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.google.gson.Gson
 import com.ruangtenun.app.data.remote.api.ApiServiceProduct
+import com.ruangtenun.app.data.remote.response.AddProductResponse
 import com.ruangtenun.app.data.remote.response.ProductDetail
 import com.ruangtenun.app.data.remote.response.ProductDetailResponse
 import com.ruangtenun.app.data.remote.response.ProductsItem
@@ -19,6 +20,26 @@ import java.io.File
 class ProductsRepository(
     private val apiServiceProduct: ApiServiceProduct,
 ) {
+
+    fun addProduct(
+        token: String,
+        image: MultipartBody.Part,
+        name: String,
+        ecommerceUrl: String,
+        lat: Double,
+        lon: Double
+    ): LiveData<ResultState<Response<AddProductResponse>>> = liveData {
+        emit(ResultState.Loading)
+        try {
+            val successResponse =
+                apiServiceProduct.addProduct(token, image, name, ecommerceUrl, lat, lon)
+            emit(ResultState.Success(successResponse))
+        } catch (e: HttpException) {
+            val errorBody = e.response()?.errorBody()?.string()
+            val errorResponse = Gson().fromJson(errorBody, AddProductResponse::class.java)
+            emit(ResultState.Error(errorResponse.message ?: "Unknown error"))
+        }
+    }
 
     suspend fun getAllProduct(token: String): ResultState<List<ProductsItem>> {
         return try {

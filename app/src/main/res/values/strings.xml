@@ -75,7 +75,7 @@
     <string name="desc_menu_2">With the Scan feature, you can easily identify the motif and origin of woven fabrics with just one snap!</string>
     <string name="title_menu_3">Ready to explore the world of weaving?</string>
     <string name="desc_menu_3">Let\'s start your adventure in Ruang Tenun! Login now!</string>
-    <string name="product_name">Product Name</string>
+    <string name="product_name">Product Name:</string>
     <string name="product_link">Product Link</string>
     <string name="location_offline">offline store location if any</string>
     <string name="navigate_to_map">View Maps</string>
@@ -131,4 +131,6 @@
     <string name="failed_save_image_to_storage">Failed to save image to storage</string>
     <string name="failed_to_predict">Failed To Predict</string>
     <string name="detail_catalog">Detail Catalog</string>
+    <string name="ecommerce">Ecommerce</string>
+    <string name="address">Address:</string>
 </resources>

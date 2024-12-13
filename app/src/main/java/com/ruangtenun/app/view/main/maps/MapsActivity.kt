@@ -1,6 +1,5 @@
 package com.ruangtenun.app.view.main.maps
 
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -92,7 +91,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     putExtra("latitude", latLng.latitude)
                     putExtra("longitude", latLng.longitude)
                 }
-                setResult(Activity.RESULT_OK, resultIntent)
+                setResult(RESULT_OK, resultIntent)
                 finish()
             }
         }

@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ruangtenun.app.data.remote.response.AddProductResponse
 import com.ruangtenun.app.data.remote.response.CatalogDetail
 import com.ruangtenun.app.data.remote.response.CatalogItem
 import com.ruangtenun.app.data.remote.response.ProductDetail
@@ -12,6 +13,8 @@ import com.ruangtenun.app.data.repository.CatalogRepository
 import com.ruangtenun.app.data.repository.ProductsRepository
 import com.ruangtenun.app.utils.ResultState
 import kotlinx.coroutines.launch
+import okhttp3.MultipartBody
+import retrofit2.Response
 
 class MainViewModel(
     private val productsRepository: ProductsRepository,
@@ -106,5 +109,15 @@ class MainViewModel(
         _productState.postValue(ResultState.Success(filteredByCatalog))
     }
 
+    fun addProduct(
+        token: String,
+        image: MultipartBody.Part,
+        name: String,
+        ecommerceUrl: String,
+        lat: Double,
+        lon: Double
+    ): LiveData<ResultState<Response<AddProductResponse>>> {
+        return productsRepository.addProduct(token, image, name, ecommerceUrl, lat, lon)
+    }
 
 }

@@ -21,7 +21,8 @@
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center"
-            android:contentDescription="@string/product_photo" />
+            android:contentDescription="@string/product_photo"
+            android:scaleType="centerCrop" />
 
         <LinearLayout
             android:layout_width="0dp"

@@ -20,6 +20,7 @@ import com.ruangtenun.app.databinding.FragmentProductBinding
 import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
+import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
 import com.ruangtenun.app.viewmodel.main.AdapterProduct
 import com.ruangtenun.app.viewmodel.main.MainViewModel
 
@@ -36,13 +37,23 @@ class ProductFragment : Fragment() {
         ViewModelFactory.getInstance(requireActivity().application)
     }
 
-    private val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6InNhZWZ1bCIsImVtYWlsIjoic2FlZnVsQGdtYWlsLmNvbSIsImlhdCI6MTczNDAxNDkzMSwiZXhwIjoxNzM0MDE4NTMxfQ.OtWCCrSUGgUbTpUX0IgJEp6p_LfXORVNmPT1zROm6XE"
+    private val authViewModel: AuthViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
+
+    private var token = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentProductBinding.inflate(inflater, container, false)
+
+        authViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            token = user.token
+            mainViewModel.fetchCatalogs(token)
+            mainViewModel.fetchProducts(token)
+        }
 
         setupRecyclerView()
         setupAdapter()
@@ -59,9 +70,6 @@ class ProductFragment : Fragment() {
                 true
             }
         }
-
-        mainViewModel.fetchCatalogs(token)
-        mainViewModel.fetchProducts(token)
 
         return binding.root
     }
@@ -107,6 +115,7 @@ class ProductFragment : Fragment() {
             when (result) {
                 is ResultState.Idle -> {
                 }
+
                 is ResultState.Loading -> showLoading(true)
                 is ResultState.Success -> {
                     showLoading(false)
@@ -117,6 +126,7 @@ class ProductFragment : Fragment() {
                     catalogAdapter.addAll(catalogNames)
                     catalogAdapter.notifyDataSetChanged()
                 }
+
                 is ResultState.Error -> {
                     showLoading(false)
                     showToast(requireContext(), result.error)
@@ -128,11 +138,13 @@ class ProductFragment : Fragment() {
             when (result) {
                 is ResultState.Idle -> {
                 }
+
                 is ResultState.Loading -> showLoading(true)
                 is ResultState.Success -> {
                     showLoading(false)
                     setProducts(result.data)
                 }
+
                 is ResultState.Error -> {
                     showLoading(false)
                     showToast(requireContext(), result.error)

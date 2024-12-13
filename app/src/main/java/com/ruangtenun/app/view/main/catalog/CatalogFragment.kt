@@ -15,6 +15,7 @@ import com.ruangtenun.app.databinding.FragmentCatalogBinding
 import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
+import com.ruangtenun.app.viewmodel.authentication.AuthViewModel
 import com.ruangtenun.app.viewmodel.catalog.AdapterCatalog
 import com.ruangtenun.app.viewmodel.main.MainViewModel
 
@@ -28,18 +29,26 @@ class CatalogFragment : Fragment() {
         ViewModelFactory.getInstance(requireActivity().application)
     }
 
-    private var token: String = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6NywibmFtZSI6InNhZWZ1bCIsImVtYWlsIjoic2FlZnVsQGdtYWlsLmNvbSIsImlhdCI6MTczNDAxNzIzMiwiZXhwIjoxNzM0MDIwODMyfQ.QP4H1LMBN2ivdOykHHOA6r6cF2fkPApfw8_7F9M2-TQ"
+    private val authViewModel: AuthViewModel by viewModels {
+        ViewModelFactory.getInstance(requireActivity().application)
+    }
+
+    private var token: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View{
+    ): View {
         _binding = FragmentCatalogBinding.inflate(inflater, container, false)
+
+        authViewModel.getSession().observe(viewLifecycleOwner) { user ->
+            token = user.token
+            mainViewModel.fetchCatalogs(token)
+        }
 
         setupRecyclerView()
         setupAdapter()
         observeCatalogs()
-        mainViewModel.fetchCatalogs(token)
 
         return _binding!!.root
     }
@@ -57,11 +66,11 @@ class CatalogFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        adapterCatalog = AdapterCatalog{ productId ->
+        adapterCatalog = AdapterCatalog { catalogId ->
             val bundle = Bundle().apply {
-                productId?.let { putInt("productId", it) }
+                catalogId?.let { putInt("catalogId", it) }
             }
-            findNavController().navigate(R.id.navigation_detail, bundle)
+            findNavController().navigate(R.id.navigation_detail_catalog, bundle)
         }
         binding.rvCatalog.adapter = adapterCatalog
     }
@@ -72,11 +81,13 @@ class CatalogFragment : Fragment() {
             when (result) {
                 is ResultState.Idle -> {
                 }
+
                 is ResultState.Loading -> showLoading(true)
                 is ResultState.Success -> {
                     showLoading(false)
                     setCatalog(result.data)
                 }
+
                 is ResultState.Error -> {
                     showLoading(false)
                     showToast(requireContext(), result.error)

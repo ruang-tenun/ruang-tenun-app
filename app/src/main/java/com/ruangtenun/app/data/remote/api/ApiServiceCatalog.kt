@@ -9,12 +9,12 @@ import retrofit2.http.Path
 
 interface ApiServiceCatalog {
 
-    @GET("api/categories")
+    @GET("categories")
     suspend fun getAllCatalog(
         @Header("Authorization") token: String,
     ): Response<CatalogResponse>
 
-    @GET("api/categories/{id}")
+    @GET("categories/{id}")
     suspend fun getCatalogById(
         @Path("id") id: Int,
         @Header("Authorization") token: String
