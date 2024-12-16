@@ -15,7 +15,6 @@ data class FavoriteResponse(
 )
 
 data class FavoriteItem(
-
     @field:SerializedName("favorited_at")
     val favoritedAt: String,
 
@@ -33,4 +32,37 @@ data class FavoriteItem(
 
     @field:SerializedName("product_name")
     val productNam: String
+)
+
+data class AddFavoriteResponse(
+
+    @field:SerializedName("payload")
+    val favorite: Favorite? = null,
+
+    @field:SerializedName("message")
+    val message: String? = null,
+
+    @field:SerializedName("status")
+    val status: String? = null
+)
+
+data class Favorite(
+
+    @field:SerializedName("favorited_at")
+    val favoritedAt: String? = null,
+
+    @field:SerializedName("user_id")
+    val userId: Int? = null,
+
+    @field:SerializedName("product_id")
+    val productId: Int? = null
+)
+
+data class DeleteFavoriteResponse(
+
+    @field:SerializedName("message")
+    val message: String? = null,
+
+    @field:SerializedName("status")
+    val status: String? = null
 )

@@ -2,6 +2,7 @@ package com.ruangtenun.app.view.main.product
 
 import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +17,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.ruangtenun.app.R
 import com.ruangtenun.app.data.remote.response.CatalogItem
-import com.ruangtenun.app.data.remote.response.FavoriteItem
 import com.ruangtenun.app.data.remote.response.ProductsItem
 import com.ruangtenun.app.databinding.FragmentProductBinding
 import com.ruangtenun.app.utils.ResultState
@@ -102,12 +102,74 @@ class ProductFragment : Fragment() {
     }
 
     private fun setupAdapter() {
-        adapterProduct = AdapterProduct { productId ->
-            val bundle = Bundle().apply {
-                productId?.let { putInt("productId", it) }
+        adapterProduct = AdapterProduct(
+            onItemClick = { productId ->
+                val bundle = Bundle().apply { putInt("productId", productId ?: 0) }
+                findNavController().navigate(R.id.navigation_detail, bundle)
+            },
+            onFavoriteClick = { productId, isFavorite ->
+                adapterProduct.updateFavoriteStatus(productId ?: 0, isFavorite)
+
+                if (isFavorite) {
+                    favoriteViewModel.addFavorite("Bearer $token", userId, productId ?: 0)
+                        .observe(viewLifecycleOwner) { result ->
+                            when (result) {
+                                is ResultState.Success -> {
+                                    showToast(
+                                        requireContext(),
+                                        getString(R.string.success_add_favorite)
+                                    )
+                                }
+
+                                is ResultState.Error -> {
+                                    adapterProduct.updateFavoriteStatus(productId ?: 0, false)
+                                    showToast(
+                                        requireContext(),
+                                        getString(R.string.error_add_favorite)
+                                    )
+                                }
+
+                                ResultState.Idle -> {
+                                }
+
+                                ResultState.Loading -> {
+                                }
+                            }
+                        }
+                } else {
+                    val favoriteId = adapterProduct.getFavoriteIdByProductId(productId ?: 0)
+                    if (favoriteId != null) {
+                        favoriteViewModel.removeFavorite("Bearer $token", favoriteId)
+                            .observe(viewLifecycleOwner) { result ->
+                                when (result) {
+                                    is ResultState.Success -> {
+                                        showToast(
+                                            requireContext(),
+                                            getString(R.string.success_remove_favorite)
+                                        )
+                                    }
+
+                                    is ResultState.Error -> {
+                                        adapterProduct.updateFavoriteStatus(productId ?: 0, true)
+                                        showToast(
+                                            requireContext(),
+                                            getString(R.string.error_remove_favorite)
+                                        )
+                                    }
+
+                                    ResultState.Idle -> {
+                                    }
+
+                                    ResultState.Loading -> {
+                                    }
+                                }
+                            }
+                    } else {
+//                        showToast(requireContext(), getString(R.string.error_favorite_not_found))
+                    }
+                }
             }
-            findNavController().navigate(R.id.navigation_detail, bundle)
-        }
+        )
         binding.rvProducts.adapter = adapterProduct
     }
 
@@ -151,14 +213,14 @@ class ProductFragment : Fragment() {
         favoriteViewModel.favoriteByUserId.observe(viewLifecycleOwner) { favoriteResult ->
             when (favoriteResult) {
                 is ResultState.Success -> {
-                    adapterProduct.setFavorites(favoriteResult.data) // Kirim data favorit ke adapter
+                    adapterProduct.setFavorites(favoriteResult.data)
                 }
 
                 is ResultState.Error -> {
                     showToast(requireContext(), favoriteResult.error)
                 }
 
-                is ResultState.Loading -> { /* Tampilkan loading jika diperlukan */
+                is ResultState.Loading -> {
                 }
 
                 else -> {}
@@ -205,11 +267,6 @@ class ProductFragment : Fragment() {
                 val selectedCategory =
                     if (position == 0) null else catalogOptions[position - 1].name
                 mainViewModel.filterByCatalog(selectedCategory)
-                Toast.makeText(
-                    requireContext(),
-                    "Filtered: ${catalogNames[position]}",
-                    Toast.LENGTH_SHORT
-                ).show()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {

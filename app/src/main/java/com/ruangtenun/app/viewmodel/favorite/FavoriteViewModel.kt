@@ -3,6 +3,7 @@ package com.ruangtenun.app.viewmodel.favorite
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.ruangtenun.app.data.remote.response.FavoriteItem
 import com.ruangtenun.app.data.remote.response.FavoriteResponse
@@ -40,4 +41,17 @@ class FavoriteViewModel(private val favoriteRepository: FavoriteRepository) : Vi
             }
         }
     }
+
+    fun addFavorite(token: String, userId: Int, productId: Int) = liveData {
+        emit(ResultState.Loading)
+        val result = favoriteRepository.addFavorite(token, userId, productId)
+        emit(result)
+    }
+
+    fun removeFavorite(token: String, favoriteId: Int) = liveData {
+        emit(ResultState.Loading)
+        val result = favoriteRepository.removeFavorite(token, favoriteId)
+        emit(result)
+    }
+
 }
