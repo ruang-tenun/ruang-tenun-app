@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ruangtenun.app.data.remote.response.AddProductResponse
+import com.ruangtenun.app.data.remote.response.AddProductsResponse
 import com.ruangtenun.app.data.remote.response.CatalogDetail
 import com.ruangtenun.app.data.remote.response.CatalogItem
 import com.ruangtenun.app.data.remote.response.ProductDetail
@@ -117,10 +117,14 @@ class MainViewModel(
         token: String,
         image: MultipartBody.Part,
         name: String,
-        ecommerceUrl: String,
-        lat: Double,
-        lon: Double
-    ): LiveData<ResultState<Response<AddProductResponse>>> {
-        return productsRepository.addProduct(token, image, name, ecommerceUrl, lat, lon)
+        address: String,
+        lat: String,
+        lon: String,
+        categoryId: Int,
+        sellerId: Int,
+        ecommerceName: String,
+        ecommerceLink: String
+    ): LiveData<ResultState<Response<AddProductsResponse>>> {
+        return productsRepository.addProduct(token, image, name, address, lat, lon, categoryId, sellerId, ecommerceName, ecommerceLink)
     }
 }

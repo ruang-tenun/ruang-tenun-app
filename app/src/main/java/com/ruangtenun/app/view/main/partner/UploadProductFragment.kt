@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.ruangtenun.app.R
 import com.ruangtenun.app.databinding.FragmentUploadProductBinding
+import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ToastUtils.showToast
 import com.ruangtenun.app.utils.ViewModelFactory
 import com.ruangtenun.app.utils.reduceFileImage
@@ -190,14 +191,27 @@ class UploadProductFragment : Fragment() {
 
     private fun addProduct() {
 
-        binding.tfProductName.text?.isBlank() ?: showToast(
-            requireContext(),
-            "Product name cannot be empty"
-        )
-        binding.tfLinkProduct.text?.isBlank() ?: showToast(
-            requireContext(),
-            "E-commerce URL cannot be empty"
-        )
+        binding.apply {
+            tfProductName.text?.isBlank() ?: showToast(
+                requireContext(),
+                "Product name cannot be empty"
+            )
+
+            tfLinkProduct.text?.isBlank() ?: showToast(
+                requireContext(),
+                "E-commerce URL cannot be empty"
+            )
+
+            tfEcommerce.text?.isBlank() ?: showToast(
+                requireContext(),
+                "Ecommerce Name cannot be empty"
+            )
+
+            tfAddress.text?.isBlank() ?: showToast(
+                requireContext(),
+                "Address cannot be empty"
+            )
+        }
 
         if (latitude == null || longitude == null) {
             showToast(requireContext(), "Please select a valid location")
@@ -217,10 +231,10 @@ class UploadProductFragment : Fragment() {
                 requestImageFile
             )
 
-            val name =
-                binding.tfProductName.text.toString()
-            val ecommerceUrl =
-                binding.tfLinkProduct.text.toString()
+            val name = binding.tfProductName.text.toString()
+            val ecommerceName = binding.tfEcommerce.text.toString()
+            val ecommerceUrl = binding.tfLinkProduct.text.toString()
+            val address = binding.tfAddress.text.toString()
 
             if (latitude == null || longitude == null) {
                 showToast(requireContext(), getString(R.string.location_error))
@@ -228,9 +242,32 @@ class UploadProductFragment : Fragment() {
             }
 
             mainViewModel.addProduct(
-                token, multipartBody, name, ecommerceUrl, latitude!!, longitude!!
-            )
-            showToast(requireContext(), "Success add product")
+                token,
+                multipartBody,
+                name,
+                address,
+                latitude!!.toString(),
+                longitude!!.toString(),
+                1,
+                6,
+                ecommerceName,
+                ecommerceUrl
+            ).observe(viewLifecycleOwner) { result ->
+                when (result) {
+                    is ResultState.Error -> {
+                        showLoading(false)
+                        showToast(requireContext(), result.error)
+                    }
+
+                    ResultState.Idle -> showLoading(true)
+                    ResultState.Loading -> showLoading(true)
+                    is ResultState.Success -> {
+                        showLoading(false)
+                        showToast(requireContext(), "Upload Successfully")
+                        findNavController().popBackStack()
+                    }
+                }
+            }
         } ?: showToast(requireContext(), getString(R.string.no_image_selected))
     }
 
@@ -250,6 +287,10 @@ class UploadProductFragment : Fragment() {
         } else {
             binding.tfLocation.setText(getString(R.string.location_error))
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressIndicator.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     companion object {

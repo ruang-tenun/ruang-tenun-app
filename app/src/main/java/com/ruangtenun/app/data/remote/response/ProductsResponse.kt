@@ -97,12 +97,3 @@ data class ProductDetail(
 	@field:SerializedName("longitude")
 	val longitude: Double? = null
 )
-
-data class AddProductResponse(
-
-	@field:SerializedName("status")
-	val error: Boolean? = null,
-
-	@field:SerializedName("message")
-	val message: String? = null
-)

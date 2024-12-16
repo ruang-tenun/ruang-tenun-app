@@ -8,10 +8,8 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.ruangtenun.app.data.remote.response.FavoriteItem
-import com.ruangtenun.app.data.remote.response.FavoriteResponse
 import com.ruangtenun.app.databinding.FragmentFavoriteBinding
 import com.ruangtenun.app.utils.ResultState
 import com.ruangtenun.app.utils.ViewModelFactory
@@ -75,7 +73,12 @@ class FavoriteFragment : Fragment() {
                 ResultState.Loading -> showLoading(true)
                 is ResultState.Success -> {
                     showLoading(false)
-                    setFavorite(result.data)
+                    val listFavorite = result.data
+                    if (listFavorite.isEmpty()) {
+                        showLoading(false)
+                    } else {
+                        setFavorite(listFavorite)
+                    }
                     Log.d("FavoriteFragment", "Favorite: ${result.data}")
                 }
             }
