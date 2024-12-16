@@ -134,4 +134,9 @@
     <string name="ecommerce">Ecommerce</string>
     <string name="address">Address:</string>
     <string name="add_to_favorite">Favorite Product</string>
+    <string name="success_add_favorite">Added to favorite</string>
+    <string name="error_add_favorite">Cannot add to favorite</string>
+    <string name="loading_add_favorite">Adding to favorites</string>
+    <string name="success_remove_favorite">Success Delete Favorite</string>
+    <string name="error_remove_favorite">Error Delete Favorite</string>
 </resources>

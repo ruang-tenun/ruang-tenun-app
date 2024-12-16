@@ -71,8 +71,6 @@ class HomeFragment : Fragment() {
 
         authViewModel.getSession().observe(viewLifecycleOwner) { user ->
             token = user.token
-            Log.d("HomeFragment", "Token: $token")
-            showToast(requireContext(), token)
             displayUserData(user)
             mainViewModel.fetchProducts(token)
             mainViewModel.fetchCatalogs(token)
@@ -100,7 +98,7 @@ class HomeFragment : Fragment() {
         try {
             fusedLocationClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
-                    getCityName(location.latitude, location.longitude)
+//                    getCityName(location.latitude, location.longitude)
                     onLocationRetrieved(location)
                 } else {
                     showToast(requireContext(), getString(R.string.location_failed))
@@ -122,7 +120,6 @@ class HomeFragment : Fragment() {
                 val countryName = addresses[0].countryName
                 val formattedMessage =
                     requireContext().getString(R.string.location_city_found, cityName, countryName)
-                showToast(requireContext(), formattedMessage)
             } else {
                 showToast(requireContext(), getString(R.string.location_address_not_found))
             }
@@ -166,7 +163,6 @@ class HomeFragment : Fragment() {
             binding.tvEmptyProducts.visibility = View.GONE
         } else {
             binding.tvEmptyProducts.visibility = View.VISIBLE
-            showToast(requireContext(), getString(R.string.no_products_nearby))
             val closestProducts = products.mapNotNull { product ->
                 if (product.latitude != null && product.longitude != null) {
                     val distance = calculateDistance(
@@ -216,7 +212,6 @@ class HomeFragment : Fragment() {
 
                 is ResultState.Error -> {
                     showLoading(false)
-                    showToast(requireContext(), state.error)
                 }
             }
         }

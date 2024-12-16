@@ -12,46 +12,72 @@ import com.ruangtenun.app.data.remote.response.ProductsItem
 import com.ruangtenun.app.databinding.CardProductBinding
 
 class AdapterProduct(
-    private val onItemClick: ((Int?) -> Unit)? = null
+    private val onItemClick: ((Int?) -> Unit)? = null,
+    private val onFavoriteClick: ((Int?, Boolean) -> Unit)? = null
 ) : ListAdapter<ProductsItem, AdapterProduct.AdapterProductViewHolder>(DIFF_CALLBACK) {
 
     private var favoriteList: List<FavoriteItem> = emptyList()
+    private val favoriteSet = mutableSetOf<Int>()
 
     fun setFavorites(favorites: List<FavoriteItem>) {
         this.favoriteList = favorites
-        notifyDataSetChanged()
+        favoriteSet.clear()
+        favoriteSet.addAll(favorites.map { it.productId })
+    }
+
+    fun getFavoriteIdByProductId(productId: Int): Int? {
+        return favoriteList.find { it.productId == productId }?.favoriteId
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AdapterProductViewHolder {
         val binding =
             CardProductBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return AdapterProductViewHolder(binding, onItemClick)
+        return AdapterProductViewHolder(binding, onItemClick, onFavoriteClick)
     }
 
     override fun onBindViewHolder(holder: AdapterProductViewHolder, position: Int) {
         val product = getItem(position)
-        val isFavorite = favoriteList.any { it.productId == product.productId }
+        val isFavorite = favoriteSet.contains(product.productId)
         holder.bind(product, isFavorite)
+    }
+
+    fun updateFavoriteStatus(productId: Int, isFavorite: Boolean) {
+        if (isFavorite) {
+            favoriteSet.add(productId)
+        } else {
+            favoriteSet.remove(productId)
+        }
     }
 
     class AdapterProductViewHolder(
         private val binding: CardProductBinding,
-        private val onItemClick: ((Int?) -> Unit)?
+        private val onItemClick: ((Int?) -> Unit)?,
+        private val onFavoriteClick: ((Int?, Boolean) -> Unit)?
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(product: ProductsItem, isFavorite: Boolean) {
-            binding.productName.text = product.name
-            binding.productSeller.text = product.seller
-            Glide.with(binding.productPhoto.context)
-                .load(product.imageUrl)
-                .placeholder(R.drawable.ic_place_holder)
-                .into(binding.productPhoto)
+            binding.apply {
+                productName.text = product.name
+                productSeller.text = product.seller
+                Glide.with(productPhoto.context)
+                    .load(product.imageUrl)
+                    .placeholder(R.drawable.ic_place_holder)
+                    .into(productPhoto)
 
-            binding.fabLove.setImageResource(
-                if (isFavorite) R.drawable.favorite_24dp_filled else R.drawable.favorite_24dp
-            )
+                fabLove.setImageResource(
+                    if (isFavorite) R.drawable.favorite_24dp_filled else R.drawable.favorite_24dp
+                )
 
-            binding.root.setOnClickListener {
-                onItemClick?.invoke(product.productId)
+                root.setOnClickListener {
+                    onItemClick?.invoke(product.productId)
+                }
+
+                fabLove.setOnClickListener {
+                    val newState = !isFavorite
+                    onFavoriteClick?.invoke(product.productId, newState)
+                    fabLove.setImageResource(
+                        if (newState) R.drawable.favorite_24dp_filled else R.drawable.favorite_24dp
+                    )
+                }
             }
         }
     }
@@ -75,3 +101,4 @@ class AdapterProduct(
             }
     }
 }
+
