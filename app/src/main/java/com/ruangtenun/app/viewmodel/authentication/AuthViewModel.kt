@@ -41,7 +41,7 @@ class AuthViewModel(private val authRepository: AuthRepository) : ViewModel() {
             try {
                 val response = authRepository.login(email, password)
                 val id = response.payload.id
-                val name = response.payload.username
+                val name = response.payload.name
                 val token = response.token
                 val userModel =
                     UserModel(id = id, name = name, email = email, token = token, isLogin = true)

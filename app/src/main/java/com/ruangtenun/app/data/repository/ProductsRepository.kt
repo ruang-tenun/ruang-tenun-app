@@ -1,21 +1,19 @@
 package com.ruangtenun.app.data.repository
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.google.gson.Gson
 import com.ruangtenun.app.data.remote.api.ApiServiceProduct
-import com.ruangtenun.app.data.remote.response.AddProductResponse
+import com.ruangtenun.app.data.remote.response.AddProductsResponse
 import com.ruangtenun.app.data.remote.response.ProductDetail
 import com.ruangtenun.app.data.remote.response.ProductDetailResponse
 import com.ruangtenun.app.data.remote.response.ProductsItem
 import com.ruangtenun.app.data.remote.response.ProductsResponse
 import com.ruangtenun.app.utils.ResultState
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
 import retrofit2.Response
-import java.io.File
 
 class ProductsRepository(
     private val apiServiceProduct: ApiServiceProduct,
@@ -25,20 +23,36 @@ class ProductsRepository(
         token: String,
         image: MultipartBody.Part,
         name: String,
-        ecommerceUrl: String,
-        lat: Double,
-        lon: Double
-    ): LiveData<ResultState<Response<AddProductResponse>>> = liveData {
+        address: String,
+        lat: String,
+        lon: String,
+        categoryId: Int,
+        sellerId: Int,
+        ecommerceName: String,
+        ecommerceLink: String
+    ): LiveData<ResultState<Response<AddProductsResponse>>> = liveData {
         emit(ResultState.Loading)
         try {
-            val successResponse =
-                apiServiceProduct.addProduct(token, image, name, ecommerceUrl, lat, lon)
-            emit(ResultState.Success(successResponse))
+            val successResponse = apiServiceProduct.addProduct(
+                "Bearer $token", image, name, address, lat, lon, categoryId, sellerId, ecommerceName, ecommerceLink
+            )
+
+            if (successResponse.isSuccessful) {
+                emit(ResultState.Success(successResponse))
+                Log.d("ProductsRepository", "Product added successfully: $successResponse")
+            } else {
+                val errorBody = successResponse.errorBody()?.string()
+                val errorResponse = Gson().fromJson(errorBody, AddProductsResponse::class.java)
+                emit(ResultState.Error(errorResponse.message ?: "Failed with status: ${successResponse.code()}"))
+                Log.e("ProductsRepository", "Error response: ${successResponse.code()} - $errorBody")
+            }
         } catch (e: HttpException) {
             val errorBody = e.response()?.errorBody()?.string()
-            val errorResponse = Gson().fromJson(errorBody, AddProductResponse::class.java)
+            val errorResponse = Gson().fromJson(errorBody, AddProductsResponse::class.java)
             emit(ResultState.Error(errorResponse.message ?: "Unknown error"))
+            Log.e("ProductsRepository", "HttpException: ${e.message}")
         }
+
     }
 
     suspend fun getAllProduct(token: String): ResultState<List<ProductsItem>> {

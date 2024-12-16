@@ -26,5 +26,8 @@ data class Payload(
 	val email: String,
 
 	@field:SerializedName("username")
-	val username: String
+	val username: String,
+
+	@field:SerializedName("name")
+	val name: String
 )
