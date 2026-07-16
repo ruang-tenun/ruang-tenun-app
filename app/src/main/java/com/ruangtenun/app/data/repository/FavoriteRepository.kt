@@ -1,20 +1,14 @@
 package com.ruangtenun.app.data.repository
 
 import android.util.Log
-import androidx.lifecycle.LiveData
 import com.google.gson.Gson
 import com.ruangtenun.app.data.remote.api.ApiServiceFavorite
 import com.ruangtenun.app.data.remote.response.AddFavoriteResponse
-import com.ruangtenun.app.data.remote.response.AddProductResponse
 import com.ruangtenun.app.data.remote.response.DeleteFavoriteResponse
 import com.ruangtenun.app.data.remote.response.FavoriteItem
 import com.ruangtenun.app.data.remote.response.FavoriteResponse
-import com.ruangtenun.app.data.remote.response.ProductsItem
-import com.ruangtenun.app.data.remote.response.ProductsResponse
 import com.ruangtenun.app.utils.ResultState
-import okhttp3.MultipartBody
 import retrofit2.HttpException
-import retrofit2.Response
 
 class FavoriteRepository(private val apiServiceFavorite: ApiServiceFavorite) {
 

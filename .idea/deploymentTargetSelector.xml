@@ -4,6 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="Ruang_Tenun.app">
         <option name="selectionMode" value="DROPDOWN" />
+        <DialogSelection />
       </SelectionState>
     </selectionStates>
   </component>
